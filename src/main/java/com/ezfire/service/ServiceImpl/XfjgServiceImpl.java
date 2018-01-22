@@ -4,16 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.ESClient;
-import com.ezfire.service.XhsService;
+import com.ezfire.domain.Xfjg;
+import com.ezfire.service.XfjgService;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -27,34 +28,34 @@ import java.util.Map;
  * Created by lcy on 2018/1/22.
  */
 @Service
-public class XhsServiceImpl implements XhsService{
-	private static Logger s_logger = LoggerFactory.getLogger(XhsServiceImpl.class);
+public class XfjgServiceImpl implements XfjgService {
+	private static Logger s_logger = LoggerFactory.getLogger(XfjgServiceImpl.class);
 	private static RestHighLevelClient client = ESClient.getHightClient();
 
 	@Override
-	public String getXhsAround(double longitude, double latitude, double radius, int size) {
-		// 检查坐标是否合法，size是否超出
-		if(!ComMethod.isValidPoint(longitude, latitude) || size > 10000) {
+	public String getXfjgs(String nbbm) {
+		if(null == nbbm || nbbm.isEmpty()) {
 			return null;
 		}
 
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWNBBM", nbbm));
+		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+
+		searchSourceBuilder.query(boolQueryBuilder)
+				.timeout(ComDefine.elasticTimeOut)
+				.size(ComDefine.elasticMaxSearchSize)
+				.sort("DWJB", SortOrder.ASC)
+				.fetchSource(ComMethod.getBeanFields(Xfjg.class), null);
+
+		SearchRequest searchRequest = new SearchRequest()
+				.source(searchSourceBuilder)
+				.indices(ComDefine.fire_xfdw_read)
+				.types("xfdw");
+		s_logger.info(searchRequest.toString());
+
 		try {
-			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
-			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn,
-					ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
-
-			searchSourceBuilder.query(boolQueryBuilder)
-					.timeout(ComDefine.elasticTimeOut)
-					.size(size);
-
-			SearchRequest searchRequest = new SearchRequest()
-					.source(searchSourceBuilder)
-					.indices(ComDefine.fire_xhs_read)
-					.types("xhs");
-			s_logger.info(searchRequest.toString());
-
 			SearchResponse response = client.search(searchRequest);
 			SearchHits searchHits = response.getHits();
 			List<Map<String,Object>> results = new ArrayList<>();
@@ -64,7 +65,8 @@ public class XhsServiceImpl implements XhsService{
 			return JSON.toJSONString(results);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return null;
 		}
+
+		return null;
 	}
 }

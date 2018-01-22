@@ -30,10 +30,10 @@ public class AroundController {
 											   @RequestParam(value = "size", defaultValue = "1000") int size) {
 		String result = xhsService.getXhsAround(ComConvert.toDouble(longitude, 0.0), ComConvert.toDouble(latitude, 0.0), radius, size);
 		if(null == result) {
-			return new ResponseEntity<String>("{\"message\":\"输入不合法\"}", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("{\"message\":\"输入不合法\"}", HttpStatus.BAD_REQUEST);
 		}
 		else {
-			return new ResponseEntity<String>(result, HttpStatus.OK);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
 }

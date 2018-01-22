@@ -14,6 +14,8 @@ public class ComDefine {
 	 */
 	public static TimeValue elasticTimeOut = new TimeValue(60, TimeUnit.SECONDS);
 
+	public static int elasticMaxSearchSize = 10000;
+
 	/**
 	 * ES中SHAPE字段
 	 */
@@ -29,4 +31,9 @@ public class ComDefine {
 	 */
 	public static String fire_xhs_read = "fire_xhs_read";
 	public static String fire_xhs_write = "fire_xhs_write";
+	/**
+	 * 消防单位（机构）
+	 */
+	public static String fire_xfdw_read = "fire_xfdw_read";
+	public static String fire_xfdw_write = "fire_xfdw_write";
 }

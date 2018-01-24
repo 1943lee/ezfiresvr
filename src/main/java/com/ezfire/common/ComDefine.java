@@ -27,6 +27,11 @@ public class ComDefine {
 	public static String fire_zqxx_read = "fire_zqxx_read";
 	public static String fire_zqxx_write = "fire_zqxx_write";
 	/**
+	 * 调派信息
+	 */
+	public static String fire_dpxx_read = "fire_dpxx_read";
+	public static String fire_dpxx_write = "fire_dpxx_write";
+	/**
 	 * 消火栓
 	 */
 	public static String fire_xhs_read = "fire_xhs_read";
@@ -71,6 +76,26 @@ public class ComDefine {
 		private String value;
 
 		fireWaterSourceCode(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+	}
+
+	/**
+	 * 对象信息分类
+	 */
+	public enum dxxxType {
+		gcjz("高层建筑"),
+		dxjz("地下建筑"),
+		dxzht("大型综合体"),
+		syhg("石油化工");
+
+		private String value;
+
+		dxxxType(String value) {
 			this.value = value;
 		}
 

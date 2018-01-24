@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(value = "/zqxx")
-@Api(description = "灾情信息")
+@Api(value = "灾情信息")
 public class ZqxxController {
 	private static Logger s_logger = LoggerFactory.getLogger(ZqxxController.class);
 

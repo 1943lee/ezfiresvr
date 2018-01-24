@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "灾情基本信息",description = "字段全部大写")
 public class Zqxx {
 	@ApiModelProperty(value = "灾情编号")
-	private String zqxx;
+	private String zqbh;
 	@ApiModelProperty(value = "关联编号")
 	private String glbh;
 	@ApiModelProperty(value = "增援编号")
@@ -25,12 +25,12 @@ public class Zqxx {
 	@ApiModelProperty(value = "灾情地点")
 	private double zqdd;
 
-	public String getZqxx() {
-		return zqxx;
+	public String getZqbh() {
+		return zqbh;
 	}
 
-	public void setZqxx(String zqxx) {
-		this.zqxx = zqxx;
+	public void setZqbh(String zqbh) {
+		this.zqbh = zqbh;
 	}
 
 	public String getGlbh() {

@@ -15,7 +15,7 @@ public class Xfjg {
 	@ApiModelProperty(value = "单位内部编码")
 	private String dwnbbm;
 	@ApiModelProperty(value = "单位缩写")
-	private String dwxs;
+	private String dwsx;
 	@ApiModelProperty(value = "单位级别")
 	private String dwjb;
 	@ApiModelProperty(value = "单位类别")
@@ -109,12 +109,12 @@ public class Xfjg {
 		this.dwnbbm = dwnbbm;
 	}
 
-	public String getDwxs() {
-		return dwxs;
+	public String getDwsx() {
+		return dwsx;
 	}
 
-	public void setDwxs(String dwxs) {
-		this.dwxs = dwxs;
+	public void setDwsx(String dwsx) {
+		this.dwsx = dwsx;
 	}
 
 	public String getDwjb() {

@@ -61,6 +61,39 @@ public class ComDefine {
 	 */
 	public static String fire_xfdw_read = "fire_xfdw_read";
 	public static String fire_xfdw_write = "fire_xfdw_write";
+	/**
+	 * 重点单位（防火）
+	 */
+	public static String fire_dwxx_read = "fire_dwxx_read";
+	public static String fire_dwxx_write = "fire_dwxx_write";
+	/**
+	 *
+	 */
+	public static String fire_dwxx_miehuo_read = "fire_dwxx_miehuo_read";
+	/**
+	 *
+	 */
+	public static String fire_jzxx_read = "fire_jzxx_read";
+	/**
+	 *
+	 */
+	public static String fire_yqgx_read = "fire_yqgx_read";
+	/**
+	 *
+	 */
+	public static String fire_glsd_read = "fire_glsd_read";
+	/**
+	 *
+	 */
+	public static String fire_shxx_read = "fire_shxx_read";
+	/**
+	 *
+	 */
+	public static String fire_hdz_read = "fire_hdz_read";
+	/**
+	 *
+	 */
+	public static String fire_sdz_read = "fire_sdz_read";
 
 	/**
 	 * 消防水源
@@ -76,26 +109,6 @@ public class ComDefine {
 		private String value;
 
 		fireWaterSourceCode(String value) {
-			this.value = value;
-		}
-
-		public String getValue() {
-			return value;
-		}
-	}
-
-	/**
-	 * 对象信息分类
-	 */
-	public enum dxxxType {
-		gcjz("高层建筑"),
-		dxjz("地下建筑"),
-		dxzht("大型综合体"),
-		syhg("石油化工");
-
-		private String value;
-
-		dxxxType(String value) {
 			this.value = value;
 		}
 

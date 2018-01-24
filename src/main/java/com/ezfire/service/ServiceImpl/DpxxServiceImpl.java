@@ -4,8 +4,8 @@ import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.ESClient;
 import com.ezfire.common.EsQueryUtils;
-import com.ezfire.domain.Xfjg;
-import com.ezfire.service.XfjgService;
+import com.ezfire.domain.Dpxx;
+import com.ezfire.service.DpxxService;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -17,53 +17,35 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by lcy on 2018/1/22.
+ * Created by lcy on 2018/1/24.
  */
 @Service
-public class XfjgServiceImpl implements XfjgService {
-	private static Logger s_logger = LoggerFactory.getLogger(XfjgServiceImpl.class);
+public class DpxxServiceImpl implements DpxxService{
+	private static Logger s_logger = LoggerFactory.getLogger(ZqxxServiceImpl.class);
 	private static RestHighLevelClient client = ESClient.getHightClient();
 
-	@Override
-	public String getXfjgs(String nbbm) {
-		if(null == nbbm || nbbm.isEmpty()) {
-			return null;
+	public String getDpxxByZQBH(String zqbh) {
+		if(null == zqbh || zqbh.isEmpty()) {
+			return  null;
 		}
+
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWNBBM", nbbm));
+		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH", zqbh));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
-
-		int xzjb = nbbm.split("\\.").length;
-		if(xzjb == 1) {
-			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "01"));
-		}
-		else if(xzjb == 2) {
-			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "02"));
-		}
-		else if(xzjb == 3) {
-			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "03"));
-		}
-		else if(xzjb == 4) {
-			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "05"));
-		}
-		else if(xzjb == 5) {
-			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "09"));
-		}
 
 		searchSourceBuilder.query(boolQueryBuilder)
 				.timeout(ComDefine.elasticTimeOut)
 				.size(ComDefine.elasticMaxSearchSize)
-				.sort("DWJB", SortOrder.ASC)
-				.fetchSource(ComMethod.getBeanFields(Xfjg.class), null);
+				.sort("FSSJ", SortOrder.ASC)
+				.fetchSource(ComMethod.getBeanFields(Dpxx.class), null);
 
 		SearchRequest searchRequest = new SearchRequest()
 				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_xfdw_read)
-				.types("xfdw");
+				.indices(ComDefine.fire_dpxx_read)
+				.types("dpxx");
 		s_logger.info(searchRequest.toString());
-
 		return EsQueryUtils.getListResults(searchRequest);
 	}
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(value = "/around")
-@Api(description = "查询指定目标周边资源信息")
+@Api(value = "周边资源",description = "查询指定坐标周边资源信息")
 public class AroundController {
 	@Autowired
 	AroundService aroundService;

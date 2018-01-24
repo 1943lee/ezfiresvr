@@ -43,6 +43,23 @@ public class XfjgServiceImpl implements XfjgService {
 		boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWNBBM", nbbm));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
+		int xzjb = nbbm.split("\\.").length;
+		if(xzjb == 1) {
+			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "01"));
+		}
+		else if(xzjb == 2) {
+			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "02"));
+		}
+		else if(xzjb == 3) {
+			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "03"));
+		}
+		else if(xzjb == 4) {
+			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "05"));
+		}
+		else if(xzjb == 5) {
+			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWJB", "09"));
+		}
+
 		searchSourceBuilder.query(boolQueryBuilder)
 				.timeout(ComDefine.elasticTimeOut)
 				.size(ComDefine.elasticMaxSearchSize)

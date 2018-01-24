@@ -1,5 +1,6 @@
 package com.ezfire.web;
 
+import com.ezfire.domain.Xfjg;
 import com.ezfire.service.XfjgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,12 +24,12 @@ public class XfjgController {
 	XfjgService xfjgService;
 
 	@RequestMapping(value = "/listXfjg/{nbbm:.+}", method = RequestMethod.GET, produces = "application/json")
-	@ApiOperation(value = "根据机构内部编码查询所有下级机构")
-	@ApiImplicitParam(name = "nbbm", value = "内部编码", paramType = "path", dataType = "String")
+	@ApiOperation(value = "根据机构内部编码查询所有下级机构", response = Xfjg.class, responseContainer = "List")
+	@ApiImplicitParam(name = "nbbm", value = "内部编码", paramType = "path", dataType = "String", required = true)
 	public ResponseEntity<String> getXfjgUnderByInternelCode(@PathVariable String nbbm) {
 		String result = xfjgService.getXfjgs(nbbm);
 		if(null == result) {
-			return new ResponseEntity<>("{\"message\":\"输入不合法\"}", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("{\"message\":\"未找到对应的下级机构\"}", HttpStatus.NOT_FOUND);
 		}
 		else {
 			return new ResponseEntity<>(result, HttpStatus.OK);

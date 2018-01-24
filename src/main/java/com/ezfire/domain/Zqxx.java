@@ -6,57 +6,86 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by lcy on 2018/1/21.
  */
-@ApiModel(value = "灾情基本信息")
+@ApiModel(value = "灾情基本信息",description = "字段全部大写")
 public class Zqxx {
+	@ApiModelProperty(value = "灾情编号")
+	private String zqxx;
+	@ApiModelProperty(value = "关联编号")
+	private String glbh;
+	@ApiModelProperty(value = "增援编号")
+	private String zybh;
+	@ApiModelProperty(value = "灾情分类，‘0’表示普通灾情，‘1’表示突出灾情", allowableValues = "0,1")
+	private String zqfl;
+	@ApiModelProperty(value = "灾情名称")
+	private String zqmc;
+	@ApiModelProperty(value = "经度")
+	private double jd;
+	@ApiModelProperty(value = "纬度")
+	private double wd;
+	@ApiModelProperty(value = "灾情地点")
+	private double zqdd;
 
-	@ApiModelProperty(required = true, notes = "灾情编号", position = 0)
-	private String ZQBH;
-	@ApiModelProperty(notes = "关联编号")
-	private String GLBH;
-	@ApiModelProperty(notes = "增援编号")
-	private String ZYBH;
-	@ApiModelProperty(notes = "灾情分类，‘0’表示普通灾情，‘1’表示突出灾情", allowableValues = "0,1")
-	private String ZQFL;
-	@ApiModelProperty(notes = "灾情名称")
-	private String ZQMC;
-
-	public String getZQBH() {
-		return ZQBH;
+	public String getZqxx() {
+		return zqxx;
 	}
 
-	public void setZQBH(String ZQBH) {
-		this.ZQBH = ZQBH;
+	public void setZqxx(String zqxx) {
+		this.zqxx = zqxx;
 	}
 
-	public String getGLBH() {
-		return GLBH;
+	public String getGlbh() {
+		return glbh;
 	}
 
-	public void setGLBH(String GLBH) {
-		this.GLBH = GLBH;
+	public void setGlbh(String glbh) {
+		this.glbh = glbh;
 	}
 
-	public String getZYBH() {
-		return ZYBH;
+	public String getZybh() {
+		return zybh;
 	}
 
-	public void setZYBH(String ZYBH) {
-		this.ZYBH = ZYBH;
+	public void setZybh(String zybh) {
+		this.zybh = zybh;
 	}
 
-	public String getZQFL() {
-		return ZQFL;
+	public String getZqfl() {
+		return zqfl;
 	}
 
-	public void setZQFL(String ZQFL) {
-		this.ZQFL = ZQFL;
+	public void setZqfl(String zqfl) {
+		this.zqfl = zqfl;
 	}
 
-	public String getZQMC() {
-		return ZQMC;
+	public String getZqmc() {
+		return zqmc;
 	}
 
-	public void setZQMC(String ZQMC) {
-		this.ZQMC = ZQMC;
+	public void setZqmc(String zqmc) {
+		this.zqmc = zqmc;
+	}
+
+	public double getJd() {
+		return jd;
+	}
+
+	public void setJd(double jd) {
+		this.jd = jd;
+	}
+
+	public double getWd() {
+		return wd;
+	}
+
+	public void setWd(double wd) {
+		this.wd = wd;
+	}
+
+	public double getZqdd() {
+		return zqdd;
+	}
+
+	public void setZqdd(double zqdd) {
+		this.zqdd = zqdd;
 	}
 }

@@ -32,8 +32,50 @@ public class ComDefine {
 	public static String fire_xhs_read = "fire_xhs_read";
 	public static String fire_xhs_write = "fire_xhs_write";
 	/**
+	 * 消防水池
+	 */
+	public static String fire_xfsc_read = "fire_xfsc_read";
+	public static String fire_xfsc_write = "fire_xfsh_write";
+	/**
+	 * 消防水鹤
+	 */
+	public static String fire_xfsh_read = "fire_xfsh_read";
+	public static String fire_xfsh_write = "fire_xfsh_write";
+	/**
+	 * 取水码头
+	 */
+	public static String fire_qsmt_read = "fire_qsmt_read";
+	public static String fire_qsmt_write = "fire_qsmt_write";
+	/**
+	 * 天然水源
+	 */
+	public static String fire_trsy_read = "fire_trsy_read";
+	public static String fire_trsy_write = "fire_trsy_write";
+	/**
 	 * 消防单位（机构）
 	 */
 	public static String fire_xfdw_read = "fire_xfdw_read";
 	public static String fire_xfdw_write = "fire_xfdw_write";
+
+	/**
+	 * 消防水源
+	 */
+	public enum fireWaterSourceCode {
+		all("全部"),
+		xhs("消火栓"),
+		xfsc("消防水池"),
+		xfsh("消防水鹤"),
+		qsmt("取水码头"),
+		trsy("天然水源");
+
+		private String value;
+
+		fireWaterSourceCode(String value) {
+			this.value = value;
+		}
+
+		public String getValue() {
+			return value;
+		}
+	}
 }

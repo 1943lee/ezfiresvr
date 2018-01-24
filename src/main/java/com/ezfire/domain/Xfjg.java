@@ -1,158 +1,175 @@
 package com.ezfire.domain;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Created by lcy on 2018/1/22.
  */
-@ApiModel(value = "消防机构信息")
+@ApiModel(value = "消防机构信息",description = "字段全部大写")
 public class Xfjg {
-	private String DWMC;
-	private String DWBH;
-	private String DWNBBM;
-	private String DWXS;
-	private String DWJB;
-	private DWLB DWLB;
+	@ApiModelProperty(value = "单位名称")
+	private String dwmc;
+	@ApiModelProperty(value = "单位编号")
+	private String dwbh;
+	@ApiModelProperty(value = "单位内部编码")
+	private String dwnbbm;
+	@ApiModelProperty(value = "单位缩写")
+	private String dwxs;
+	@ApiModelProperty(value = "单位级别")
+	private String dwjb;
+	@ApiModelProperty(value = "单位类别")
+	private DWLB dwlb;
 	private static class DWLB {
-		private String ID;
-		private String VALUE;
+		@ApiModelProperty(value = "单位类别代码")
+		private String id;
+		@ApiModelProperty(value = "单位类别描述")
+		private String value;
 
-		public String getID() {
-			return ID;
+		public String getId() {
+			return id;
 		}
 
-		public void setID(String ID) {
-			this.ID = ID;
+		public void setId(String id) {
+			this.id = id;
 		}
 
-		public String getVALUE() {
-			return VALUE;
+		public String getValue() {
+			return value;
 		}
 
-		public void setVALUE(String VALUE) {
-			this.VALUE = VALUE;
+		public void setValue(String value) {
+			this.value = value;
 		}
 	}
-	private String DWDZ;
-	private String DWMS;
-	private SZDXZQH SZDXZQH;
+	@ApiModelProperty(value = "单位地址")
+	private String dwdz;
+	@ApiModelProperty(value = "单位描述")
+	private String dwms;
+	@ApiModelProperty(value = "所在地行政区划")
+	private SZDXZQH szdxzqh;
 	private static class SZDXZQH {
-		private String XZQHBH;
-		private String XZQHMC;
-		private String XZQHNBBM;
+		@ApiModelProperty(value = "行政区划编号")
+		private String xzqhbh;
+		@ApiModelProperty(value = "行政区划名称")
+		private String xzqhmc;
+		@ApiModelProperty(value = "行政区划内部编码")
+		private String xzqgnbbm;
 
-		public String getXZQHBH() {
-			return XZQHBH;
+		public String getXzqhbh() {
+			return xzqhbh;
 		}
 
-		public void setXZQHBH(String XZQHBH) {
-			this.XZQHBH = XZQHBH;
+		public void setXzqhbh(String xzqhbh) {
+			this.xzqhbh = xzqhbh;
 		}
 
-		public String getXZQHMC() {
-			return XZQHMC;
+		public String getXzqhmc() {
+			return xzqhmc;
 		}
 
-		public void setXZQHMC(String XZQHMC) {
-			this.XZQHMC = XZQHMC;
+		public void setXzqhmc(String xzqhmc) {
+			this.xzqhmc = xzqhmc;
 		}
 
-		public String getXZQHNBBM() {
-			return XZQHNBBM;
+		public String getXzqgnbbm() {
+			return xzqgnbbm;
 		}
 
-		public void setXZQHNBBM(String XZQHNBBM) {
-			this.XZQHNBBM = XZQHNBBM;
+		public void setXzqgnbbm(String xzqgnbbm) {
+			this.xzqgnbbm = xzqgnbbm;
 		}
 	}
-	private String JD;
-	private String WD;
+	@ApiModelProperty(value = "经度")
+	private double jd;
+	@ApiModelProperty(value = "纬度")
+	private double wd;
 
-	public String getDWMC() {
-		return DWMC;
+	public String getDwmc() {
+		return dwmc;
 	}
 
-	public void setDWMC(String DWMC) {
-		this.DWMC = DWMC;
+	public void setDwmc(String dwmc) {
+		this.dwmc = dwmc;
 	}
 
-	public String getDWBH() {
-		return DWBH;
+	public String getDwbh() {
+		return dwbh;
 	}
 
-	public void setDWBH(String DWBH) {
-		this.DWBH = DWBH;
+	public void setDwbh(String dwbh) {
+		this.dwbh = dwbh;
 	}
 
-	public String getDWNBBM() {
-		return DWNBBM;
+	public String getDwnbbm() {
+		return dwnbbm;
 	}
 
-	public void setDWNBBM(String DWNBBM) {
-		this.DWNBBM = DWNBBM;
+	public void setDwnbbm(String dwnbbm) {
+		this.dwnbbm = dwnbbm;
 	}
 
-	public String getDWXS() {
-		return DWXS;
+	public String getDwxs() {
+		return dwxs;
 	}
 
-	public void setDWXS(String DWXS) {
-		this.DWXS = DWXS;
+	public void setDwxs(String dwxs) {
+		this.dwxs = dwxs;
 	}
 
-	public String getDWJB() {
-		return DWJB;
+	public String getDwjb() {
+		return dwjb;
 	}
 
-	public void setDWJB(String DWJB) {
-		this.DWJB = DWJB;
+	public void setDwjb(String dwjb) {
+		this.dwjb = dwjb;
 	}
 
-	public String getDWDZ() {
-		return DWDZ;
+	public DWLB getDwlb() {
+		return dwlb;
 	}
 
-	public void setDWDZ(String DWDZ) {
-		this.DWDZ = DWDZ;
+	public void setDwlb(DWLB dwlb) {
+		this.dwlb = dwlb;
 	}
 
-	public String getDWMS() {
-		return DWMS;
+	public String getDwdz() {
+		return dwdz;
 	}
 
-	public void setDWMS(String DWMS) {
-		this.DWMS = DWMS;
+	public void setDwdz(String dwdz) {
+		this.dwdz = dwdz;
 	}
 
-	public String getJD() {
-		return JD;
+	public String getDwms() {
+		return dwms;
 	}
 
-	public void setJD(String JD) {
-		this.JD = JD;
+	public void setDwms(String dwms) {
+		this.dwms = dwms;
 	}
 
-	public String getWD() {
-		return WD;
+	public SZDXZQH getSzdxzqh() {
+		return szdxzqh;
 	}
 
-	public void setWD(String WD) {
-		this.WD = WD;
+	public void setSzdxzqh(SZDXZQH szdxzqh) {
+		this.szdxzqh = szdxzqh;
 	}
 
-	public Xfjg.DWLB getDWLB() {
-		return DWLB;
+	public double getJd() {
+		return jd;
 	}
 
-	public void setDWLB(Xfjg.DWLB DWLB) {
-		this.DWLB = DWLB;
+	public void setJd(double jd) {
+		this.jd = jd;
 	}
 
-	public Xfjg.SZDXZQH getSZDXZQH() {
-		return SZDXZQH;
+	public double getWd() {
+		return wd;
 	}
 
-	public void setSZDXZQH(Xfjg.SZDXZQH SZDXZQH) {
-		this.SZDXZQH = SZDXZQH;
+	public void setWd(double wd) {
+		this.wd = wd;
 	}
 }

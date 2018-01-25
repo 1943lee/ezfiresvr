@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -68,7 +69,10 @@ public class EsQueryUtils {
 	 * @param mustQueryBuilder
 	 * @return
 	 */
-	public static String queryListByQueryBuilder(String index, String type, QueryBuilder mustQueryBuilder) {
+	public static String queryListByQueryBuilder(String index, String type, QueryBuilder mustQueryBuilder, int size) {
+		if(size == -1 || size > ComDefine.elasticMaxSearchSize) {
+			size = ComDefine.elasticMaxSearchSize;
+		}
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(mustQueryBuilder);
@@ -76,7 +80,7 @@ public class EsQueryUtils {
 
 		searchSourceBuilder.query(boolQueryBuilder)
 				.timeout(ComDefine.elasticTimeOut)
-				.size(ComDefine.elasticMaxSearchSize);
+				.size(size);
 
 		SearchRequest searchRequest = new SearchRequest()
 				.source(searchSourceBuilder)
@@ -84,6 +88,37 @@ public class EsQueryUtils {
 				.types(type);
 		s_logger.info(searchRequest.toString());
 		return getListResults(searchRequest);
+	}
+
+	/**
+	 * 查询指定坐标周边资源，返回SearchHits
+	 * @param indexName
+	 * @param typeName
+	 * @param longitude
+	 * @param latitude
+	 * @param radius
+	 * @param size
+	 * @return
+	 */
+	public static SearchHits getAroundResourceHits(String indexName, String typeName, double longitude, double latitude, double radius, int size) {
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn, ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
+
+			searchSourceBuilder.query(boolQueryBuilder).timeout(ComDefine.elasticTimeOut).size(size);
+
+			SearchRequest searchRequest = new SearchRequest().source(searchSourceBuilder).indices(indexName).types(typeName);
+			s_logger.info(searchRequest.toString());
+
+			SearchResponse response = client.search(searchRequest);
+			return response.getHits();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**

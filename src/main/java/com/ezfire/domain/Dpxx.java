@@ -12,14 +12,10 @@ public class Dpxx {
 	private String zqbh;
 	@ApiModelProperty(value = "调派编号")
 	private String dpbh;
-	@ApiModelProperty(value = "发送单位")
-	private String fsdw;
 	@ApiModelProperty(value = "发送机构")
 	private SZDXFJG fsjg;
 	@ApiModelProperty(value = "发送时间")
 	private String fssj;
-	@ApiModelProperty(value = "接收单位")
-	private String jsdw;
 	@ApiModelProperty(value = "接收机构")
 	private SZDXFJG jsjg;
 	@ApiModelProperty(value = "反馈时间")
@@ -372,14 +368,6 @@ public class Dpxx {
 		this.dpbh = dpbh;
 	}
 
-	public String getFsdw() {
-		return fsdw;
-	}
-
-	public void setFsdw(String fsdw) {
-		this.fsdw = fsdw;
-	}
-
 	public SZDXFJG getFsjg() {
 		return fsjg;
 	}
@@ -394,14 +382,6 @@ public class Dpxx {
 
 	public void setFssj(String fssj) {
 		this.fssj = fssj;
-	}
-
-	public String getJsdw() {
-		return jsdw;
-	}
-
-	public void setJsdw(String jsdw) {
-		this.jsdw = jsdw;
 	}
 
 	public SZDXFJG getJsjg() {

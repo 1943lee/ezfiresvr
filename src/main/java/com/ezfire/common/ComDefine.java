@@ -67,33 +67,45 @@ public class ComDefine {
 	public static String fire_dwxx_read = "fire_dwxx_read";
 	public static String fire_dwxx_write = "fire_dwxx_write";
 	/**
-	 *
+	 * 重点单位（灭火）
 	 */
 	public static String fire_dwxx_miehuo_read = "fire_dwxx_miehuo_read";
 	/**
-	 *
+	 * 建筑信息
 	 */
 	public static String fire_jzxx_read = "fire_jzxx_read";
 	/**
-	 *
+	 * 油气管线
 	 */
 	public static String fire_yqgx_read = "fire_yqgx_read";
 	/**
-	 *
+	 * 公路隧道
 	 */
 	public static String fire_glsd_read = "fire_glsd_read";
 	/**
-	 *
+	 * 石化信息
 	 */
 	public static String fire_shxx_read = "fire_shxx_read";
 	/**
-	 *
+	 * 核电站
 	 */
 	public static String fire_hdz_read = "fire_hdz_read";
 	/**
-	 *
+	 * 水电站、水库
 	 */
 	public static String fire_sdz_read = "fire_sdz_read";
+	/**
+	 * 联勤保障单位
+	 */
+	public static String fire_lqbzdw_read = "fire_lqbzdw_read";
+	/**
+	 * 应急联动单位
+	 */
+	public static String fire_yjlddw_read = "fire_yjlddw_read";
+	/**
+	 * 灭火救援专家
+	 */
+	public static String fire_mhjyzj_read = "fire_mhjyzj_read";
 
 	/**
 	 * 消防水源

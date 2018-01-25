@@ -29,7 +29,6 @@ public class DpxxServiceImpl implements DpxxService{
 			return  null;
 		}
 
-
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH", zqbh));

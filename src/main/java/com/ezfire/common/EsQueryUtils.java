@@ -5,6 +5,7 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -58,6 +59,31 @@ public class EsQueryUtils {
 			return null;
 		}
 		return null;
+	}
+
+	/**
+	 * 指定queryBuilder查询，返回json数组
+	 * @param index
+	 * @param type
+	 * @param mustQueryBuilder
+	 * @return
+	 */
+	public static String queryListByQueryBuilder(String index, String type, QueryBuilder mustQueryBuilder) {
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		boolQueryBuilder.must().add(mustQueryBuilder);
+		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+
+		searchSourceBuilder.query(boolQueryBuilder)
+				.timeout(ComDefine.elasticTimeOut)
+				.size(ComDefine.elasticMaxSearchSize);
+
+		SearchRequest searchRequest = new SearchRequest()
+				.source(searchSourceBuilder)
+				.indices(index)
+				.types(type);
+		s_logger.info(searchRequest.toString());
+		return getListResults(searchRequest);
 	}
 
 	/**

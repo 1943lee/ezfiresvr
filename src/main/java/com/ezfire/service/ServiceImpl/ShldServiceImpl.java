@@ -15,13 +15,13 @@ public class ShldServiceImpl implements ShldService {
 	@Override
 	public String getLqbzdwByXzqhnbbm(String nbbm) {
 		QueryBuilder queryBuilder = QueryBuilders.prefixQuery("SZDXZQH.XZQHNBBM", nbbm);
-		return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_lqbzdw_read, "lqbzdw", queryBuilder);
+		return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_lqbzdw_read, "lqbzdw", queryBuilder, -1);
 	}
 
 	@Override
 	public String getYjlddwByXzqhnbbm(String nbbm) {
 		QueryBuilder queryBuilder = QueryBuilders.prefixQuery("SZDXZQH.XZQHNBBM", nbbm);
-		return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_yjlddw_read, "yjlddw", queryBuilder);
+		return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_yjlddw_read, "yjlddw", queryBuilder, -1);
 	}
 
 	@Override
@@ -34,13 +34,13 @@ public class ShldServiceImpl implements ShldService {
 			// 消防局
 			case 1:
 				queryBuilder = QueryBuilders.termQuery("SZDXFJG.XFJGBH", "eb09df352cda4902b24c54dd2b2ce656");
-				return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_mhjyzj_read, "mhjyzj", queryBuilder);
+				return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_mhjyzj_read, "mhjyzj", queryBuilder, -1);
 			// 总队，只查询总队一级，即省
 			case 2:
 				if(ids.length >= 2) {
 					String xzqhbh = ids[1];
 					queryBuilder = QueryBuilders.termQuery("SZDXZQH.XZQHBH", xzqhbh);
-					return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_mhjyzj_read, "mhjyzj", queryBuilder);
+					return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_mhjyzj_read, "mhjyzj", queryBuilder, -1);
 				}
 				break;
 			// 支队，查询支队及以下
@@ -48,7 +48,7 @@ public class ShldServiceImpl implements ShldService {
 				if(ids.length >= 3) {
 					String xzqhnbbm = ids[0] + "." + ids[1] + "." + ids[2];
 					queryBuilder = QueryBuilders.prefixQuery("SZDXZQH.XZQHNBBM", xzqhnbbm);
-					return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_mhjyzj_read, "mhjyzj", queryBuilder);
+					return EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_mhjyzj_read, "mhjyzj", queryBuilder, -1);
 				}
 				break;
 		}

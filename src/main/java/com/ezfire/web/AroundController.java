@@ -29,7 +29,7 @@ public class AroundController {
 	@ApiImplicitParams({@ApiImplicitParam(name = "syfl", paramType = "path", dataType = "String", required = true, value = "水源分类", allowableValues = "all,xhs,xfsc,xfsh,qsmt,trsy"),
 			@ApiImplicitParam(name = "radius", value = "半径，单位米", defaultValue = "500", dataType = "Double", paramType = "query"),
 			@ApiImplicitParam(name = "size", value = "结果集最大size，不超过10000", defaultValue = "1000", dataType = "int", paramType = "query")})
-	public ResponseEntity<String> getXhsAround(@PathVariable ComDefine.fireWaterSourceCode syfl, @PathVariable String longitude, @PathVariable String latitude,
+	public ResponseEntity<String> getXfsyAround(@PathVariable ComDefine.fireWaterSourceCode syfl, @PathVariable String longitude, @PathVariable String latitude,
 											   @RequestParam(value = "radius", defaultValue = "500") double radius,
 											   @RequestParam(value = "size", defaultValue = "1000") int size) {
 		String result = aroundService.getWaterAround(syfl, ComConvert.toDouble(longitude, 0.0), ComConvert.toDouble(latitude, 0.0), radius, size);

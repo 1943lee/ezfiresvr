@@ -8,6 +8,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class ZqxxServiceImpl implements ZqxxService {
 
 		String nbbm = ComConvert.toString(condition.get("xfjgnbbm"));
 		int from = ComConvert.toInteger(condition.get("from"), 0);
-		int size = ComConvert.toInteger(condition.get("size"), 1000);
+		int size = ComConvert.toInteger(condition.get("size"), 50);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -51,7 +52,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 				.timeout(ComDefine.elasticTimeOut)
 				.from(from)
 				.size(size)
-				.fetchSource(ComMethod.getBeanFields(Zqxx.class),null);
+				.fetchSource(ComMethod.getBeanFields(Zqxx.class),null)
+				.sort("LASJ", SortOrder.DESC);
 
 		SearchRequest searchRequest = new SearchRequest()
 				.source(searchSourceBuilder)

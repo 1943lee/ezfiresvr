@@ -37,7 +37,7 @@ public class DpxxServiceImpl implements DpxxService{
 		searchSourceBuilder.query(boolQueryBuilder)
 				.timeout(ComDefine.elasticTimeOut)
 				.size(ComDefine.elasticMaxSearchSize)
-				.sort("FSSJ", SortOrder.ASC)
+				.sort("FSSJ", SortOrder.DESC)
 				.fetchSource(ComMethod.getBeanFields(Dpxx.class), null);
 
 		SearchRequest searchRequest = new SearchRequest()

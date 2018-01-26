@@ -2,6 +2,8 @@ package com.ezfire.common;
 
 import org.elasticsearch.common.unit.TimeValue;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -111,21 +113,43 @@ public class ComDefine {
 	 * 消防水源
 	 */
 	public enum fireWaterSourceCode {
-		all("全部"),
-		xhs("消火栓"),
-		xfsc("消防水池"),
-		xfsh("消防水鹤"),
-		qsmt("取水码头"),
-		trsy("天然水源");
+		all("全部","",""),
+		xhs("消火栓",ComDefine.fire_xhs_read,"xhs"),
+		xfsc("消防水池",ComDefine.fire_xfsc_read,"xfsc"),
+		xfsh("消防水鹤",ComDefine.fire_xfsh_read,"xfsh"),
+		qsmt("取水码头",ComDefine.fire_qsmt_read,"qsmt"),
+		trsy("天然水源",ComDefine.fire_trsy_read,"trsy");
 
 		private String value;
+		private String index;
+		private String type;
 
-		fireWaterSourceCode(String value) {
+		fireWaterSourceCode(String value,String index,String type) {
 			this.value = value;
+			this.index = index;
+			this.type = type;
 		}
 
 		public String getValue() {
 			return value;
+		}
+
+		public String getIndex() {
+			return index;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public static List<fireWaterSourceCode> getAll() {
+			List<fireWaterSourceCode> list = new ArrayList<>();
+			list.add(xhs);
+			list.add(xfsc);
+			list.add(xfsh);
+			list.add(qsmt);
+			list.add(trsy);
+			return list;
 		}
 	}
 }

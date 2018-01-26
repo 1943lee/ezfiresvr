@@ -1,7 +1,6 @@
 package com.ezfire.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.ezfire.common.ComDefine;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,24 +8,24 @@ import io.swagger.annotations.ApiModelProperty;
  * Created by lcy on 2018/1/23.
  */
 @ApiModel(value = "周边资源")
-public class AroundResources {
-	@ApiModelProperty(value = "资源分类")
-	private ComDefine.fireWaterSourceCode resourceType;
+public class AroundResource {
+	@ApiModelProperty(value = "资源分类id")
+	private String resourceType;
 	@ApiModelProperty(value = "资源分类描述",position = 1)
 	@JSONField(ordinal = 1)
 	private String resourceTypeDescription;
-	@ApiModelProperty(value = "资源列表",position = 3)
+	@ApiModelProperty(value = "资源内容",position = 3)
 	@JSONField(jsonDirect=true,ordinal = 3)
 	private String content;
-	@ApiModelProperty(value = "资源总数",position = 2)
+	@ApiModelProperty(value = "距离，单位米",position = 2)
 	@JSONField(ordinal = 2)
-	private long totalCount;
+	private double distance;
 
-	public ComDefine.fireWaterSourceCode getResourceType() {
+	public String getResourceType() {
 		return resourceType;
 	}
 
-	public void setResourceType(ComDefine.fireWaterSourceCode resourceType) {
+	public void setResourceType(String resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -46,11 +45,11 @@ public class AroundResources {
 		this.content = content;
 	}
 
-	public long getTotalCount() {
-		return totalCount;
+	public double getDistance() {
+		return distance;
 	}
 
-	public void setTotalCount(long totalCount) {
-		this.totalCount = totalCount;
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 }

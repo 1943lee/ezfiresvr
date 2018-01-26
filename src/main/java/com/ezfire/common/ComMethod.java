@@ -1,5 +1,7 @@
 package com.ezfire.common;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 import java.lang.reflect.Field;
 
 /**
@@ -29,5 +31,66 @@ public class ComMethod {
 			results[i++] = field.getName().toUpperCase();
 		}
 		return  results;
+	}
+
+	/**
+	 * 根据经纬度获取距离
+	 * @param startX
+	 * @param startY
+	 * @param endX
+	 * @param endY
+	 * @return
+	 */
+	public static double getSphericalDistance(double startX, double startY, double endX, double endY) {
+		Coordinate startPt = new Coordinate(startX, startY);
+		Coordinate endPt = new Coordinate(endX, endY);
+
+		double EarthRadius = 6378.137;
+		startPt = webMercatorToGeographic(startPt);
+		endPt = webMercatorToGeographic(endPt);
+		double lon1 = startPt.x / 180 * Math.PI;
+		double lon2 = endPt.x / 180 * Math.PI;
+		double lat1 = startPt.y / 180 * Math.PI;
+		double lat2 = endPt.y / 180 * Math.PI;
+		double distance = 2 * Math.asin(Math.sqrt(Math.pow((Math.sin((lat1 - lat2) / 2)), 2) +
+				Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin((lon1 - lon2) / 2), 2))) * EarthRadius * 1000;
+
+		return (double)(Math.round(distance*1)/1.0);
+	}
+
+	/**
+	 * web墨卡托转地理坐标
+	 */
+	public static Coordinate webMercatorToGeographic(Coordinate coord) {
+		if (coord == null) {
+			return null;
+		}
+		if(isGeoCoordinate(coord)) {
+			return coord;
+		}
+		double x = coord.x;
+		double y = coord.x;
+		double num3 = x / 6378137.0;
+		double num4 = num3 * 57.295779513082323;
+		double num5 = Math.floor((double) ((num4 + 180.0) / 360.0));
+		double num6 = num4 - (num5 * 360.0);
+		double num7 = 1.5707963267948966 - (2.0 * Math.atan(Math.exp((-1.0 * y) / 6378137.0)));
+		return new Coordinate(num6 + (num5 * 360.0), num7 * 57.295779513082323);
+	}
+
+	/**
+	 * 判断是否是地理坐标系
+	 */
+	private static boolean isGeoCoordinate(Coordinate coord) {
+		if(coord == null) {
+			return false;
+		}
+
+		if(coord.x >= -180 && coord.x <= 180 && coord.y >= -90 && coord.y <= 90) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

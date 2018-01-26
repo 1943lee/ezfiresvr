@@ -6,8 +6,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +21,6 @@ import java.util.Map;
 @RequestMapping(value = "/zqxx")
 @Api(value = "灾情信息")
 public class ZqxxController {
-	private static Logger s_logger = LoggerFactory.getLogger(ZqxxController.class);
-
 	@Autowired
 	private ZqxxService zqxxService;
 
@@ -41,13 +37,13 @@ public class ZqxxController {
 	}
 
 	@RequestMapping(value = "/search",method = RequestMethod.GET,produces = "application/json")
-	@ApiOperation(value = "查询灾情信息", response = Zqxx.class, responseContainer = "List")
+	@ApiOperation(value = "查询灾情信息", notes = "按照灾情立案时间降序排列", response = Zqxx.class, responseContainer = "List")
 	@ApiImplicitParams({@ApiImplicitParam(name = "xfjgnbbm", value = "内部编码,默认为空", paramType = "query", dataType = "String"),
 			@ApiImplicitParam(name = "from", value = "from,默认0", defaultValue = "0", paramType = "query", dataType = "int"),
-			@ApiImplicitParam(name = "size", value = "size,默认1000", defaultValue = "1000", paramType = "query", dataType = "int")})
+			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int")})
 	public ResponseEntity<String> getZqxxByCondition(@RequestParam(defaultValue = "") String xfjgnbbm,
 													 @RequestParam(defaultValue = "0") int from,
-													 @RequestParam(defaultValue = "1000") int size) {
+													 @RequestParam(defaultValue = "50") int size) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
 		condition.put("from", from);

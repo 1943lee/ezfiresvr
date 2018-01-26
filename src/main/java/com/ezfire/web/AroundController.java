@@ -2,8 +2,7 @@ package com.ezfire.web;
 
 import com.ezfire.common.ComConvert;
 import com.ezfire.common.ComDefine;
-import com.ezfire.domain.AroundBwmb;
-import com.ezfire.domain.AroundResources;
+import com.ezfire.domain.AroundResource;
 import com.ezfire.service.AroundService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -25,8 +24,8 @@ public class AroundController {
 	AroundService aroundService;
 
 	@RequestMapping(value = "/xfsy/{syfl}/{longitude:.+}/{latitude:.+}",method = RequestMethod.GET,produces = "application/json")
-	@ApiOperation(value = "查询指定坐标周边水源",notes = "根据水源分类获取资源，all表示全部，xhs消火栓，xfsc消防水池，xfsh消防水鹤，qsmt取水码头，trsy天然水源\n结果集为以水源分类为key的map",
-			response = AroundResources.class)
+	@ApiOperation(value = "查询指定坐标周边水源",notes = "根据水源分类获取资源，all表示全部，xhs消火栓，xfsc消防水池，xfsh消防水鹤，qsmt取水码头，trsy天然水源，返回结果根据距离由近及远排序",
+			response = AroundResource.class, responseContainer = "List")
 	@ApiImplicitParams({@ApiImplicitParam(name = "syfl", paramType = "path", dataType = "String", required = true, value = "水源分类", allowableValues = "all,xhs,xfsc,xfsh,qsmt,trsy"),
 			@ApiImplicitParam(name = "radius", value = "半径，单位米", defaultValue = "500", dataType = "Double", paramType = "query"),
 			@ApiImplicitParam(name = "size", value = "结果集最大size，不超过10000", defaultValue = "1000", dataType = "int", paramType = "query")})
@@ -43,8 +42,8 @@ public class AroundController {
 	}
 
 	@RequestMapping(value = "/bwmb/{mbfl}/{longitude:.+}/{latitude:.+}",method = RequestMethod.GET,produces = "application/json")
-	@ApiOperation(value = "查询指定坐标周边保卫目标",notes = "{mbfl}对象类别，00：全部分类，01：重点单位(防火)，02：重点单位(灭火)，03：建筑信息，04：油气管线，05：公路隧道，06：石化单位，07：核电站，08：水电站水库",
-			response = AroundBwmb.class)
+	@ApiOperation(value = "查询指定坐标周边保卫目标",notes = "{mbfl}对象类别，00：全部分类，01：重点单位(防火)，02：重点单位(灭火)，03：建筑信息，04：油气管线，05：公路隧道，06：石化单位，07：核电站，08：水电站水库，返回结果根据距离由近及远排序",
+			response = AroundResource.class, responseContainer = "List")
 	@ApiImplicitParams({@ApiImplicitParam(name = "mbfl", paramType = "path", dataType = "String", required = true, value = "目标分类", allowableValues = "00,01,02,03,04,05,06,07,08"),
 			@ApiImplicitParam(name = "radius", value = "半径，单位米", defaultValue = "500", dataType = "Double", paramType = "query"),
 			@ApiImplicitParam(name = "size", value = "结果集最大size，不超过10000", defaultValue = "1000", dataType = "int", paramType = "query")})

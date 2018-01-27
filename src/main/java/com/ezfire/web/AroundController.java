@@ -42,9 +42,9 @@ public class AroundController {
 	}
 
 	@RequestMapping(value = "/bwmb/{mbfl}/{longitude:.+}/{latitude:.+}",method = RequestMethod.GET,produces = "application/json")
-	@ApiOperation(value = "查询指定坐标周边保卫目标",notes = "{mbfl}对象类别，00：全部分类，01：重点单位(防火)，02：重点单位(灭火)，03：建筑信息，04：油气管线，05：公路隧道，06：石化单位，07：核电站，08：水电站水库，返回结果根据距离由近及远排序",
+	@ApiOperation(value = "查询指定坐标周边保卫目标",notes = "{mbfl}对象类别，00：全部分类，01：重点单位(防火)，02：重点单位(灭火)，03：建筑信息，04：油气管线（废弃），05：公路隧道（废弃），06：石化单位，07：核电站，08：水电站水库，返回结果根据距离由近及远排序",
 			response = AroundResource.class, responseContainer = "List")
-	@ApiImplicitParams({@ApiImplicitParam(name = "mbfl", paramType = "path", dataType = "String", required = true, value = "目标分类", allowableValues = "00,01,02,03,04,05,06,07,08"),
+	@ApiImplicitParams({@ApiImplicitParam(name = "mbfl", paramType = "path", dataType = "String", required = true, value = "目标分类", allowableValues = "00,01,02,03,06,07,08"),
 			@ApiImplicitParam(name = "radius", value = "半径，单位米", defaultValue = "500", dataType = "Double", paramType = "query"),
 			@ApiImplicitParam(name = "size", value = "结果集最大size，不超过10000", defaultValue = "1000", dataType = "int", paramType = "query")})
 	public ResponseEntity<String> getBwmbAround(@PathVariable String mbfl, @PathVariable double longitude, @PathVariable double latitude,

@@ -55,8 +55,8 @@ public class AroundServiceImpl implements AroundService {
 				resultList.addAll(getResourcesAround("01","重点单位(防火)",ComDefine.fire_dwxx_read,"dwxx",longitude,latitude,radius,size));
 				resultList.addAll(getResourcesAround("02","重点单位(灭火)",ComDefine.fire_dwxx_miehuo_read,"dwxx",longitude,latitude,radius,size));
 				resultList.addAll(getResourcesAround("03","建筑信息",ComDefine.fire_jzxx_read,"jzxx",longitude,latitude,radius,size));
-				resultList.addAll(getResourcesAround("04","油气管线",ComDefine.fire_yqgx_read,"yqgx",longitude,latitude,radius,size));
-				resultList.addAll(getResourcesAround("05","公路隧道",ComDefine.fire_glsd_read,"glsd",longitude,latitude,radius,size));
+				//resultList.addAll(getResourcesAround("04","油气管线",ComDefine.fire_yqgx_read,"yqgx",longitude,latitude,radius,size));
+				//resultList.addAll(getResourcesAround("05","公路隧道",ComDefine.fire_glsd_read,"glsd",longitude,latitude,radius,size));
 				resultList.addAll(getResourcesAround("06","石油化工",ComDefine.fire_shxx_read,"shxx",longitude,latitude,radius,size));
 				resultList.addAll(getResourcesAround("07","核电站",ComDefine.fire_hdz_read,"hdz",longitude,latitude,radius,size));
 				resultList.addAll(getResourcesAround("08","水库水电站",ComDefine.fire_sdz_read,"sdz",longitude,latitude,radius,size));
@@ -70,12 +70,12 @@ public class AroundServiceImpl implements AroundService {
 			case "03":
 				resultList.addAll(getResourcesAround("03","建筑信息",ComDefine.fire_jzxx_read,"jzxx",longitude,latitude,radius,size));
 				break;
-			case "04":
+			/*case "04":
 				resultList.addAll(getResourcesAround("04","油气管线",ComDefine.fire_yqgx_read,"yqgx",longitude,latitude,radius,size));
 				break;
 			case "05":
 				resultList.addAll(getResourcesAround("05","公路隧道",ComDefine.fire_glsd_read,"glsd",longitude,latitude,radius,size));
-				break;
+				break;*/
 			case "06":
 				resultList.addAll(getResourcesAround("06","石油化工",ComDefine.fire_shxx_read,"shxx",longitude,latitude,radius,size));
 				break;

@@ -35,7 +35,7 @@ public class DxxxServiceImpl implements DxxxService{
 				esType = "jzxx";
 				idColumn = "JZBH";
 				break;
-			case "04":
+			/*case "04":
 				esIndex = ComDefine.fire_yqgx_read;
 				esType = "yqgx";
 				idColumn = "GXBH";
@@ -44,7 +44,7 @@ public class DxxxServiceImpl implements DxxxService{
 				esIndex = ComDefine.fire_glsd_read;
 				esType = "glsd";
 				idColumn = "SDBH";
-				break;
+				break;*/
 			case "06":
 				esIndex = ComDefine.fire_shxx_read;
 				esType = "shxx";

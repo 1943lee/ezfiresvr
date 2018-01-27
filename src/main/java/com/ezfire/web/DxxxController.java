@@ -24,8 +24,8 @@ public class DxxxController {
 	DxxxService dxxxService;
 
 	@RequestMapping(value="/{dxlx}/{dxbh:.+}",method = RequestMethod.GET,produces = "application/json")
-	@ApiOperation(value = "对象信息基础信息",notes = "{dxlx}对象类别，01：重点单位(防火)，02：重点单位(灭火)，03：建筑信息，04：油气管线，05：公路隧道，06：石化单位，07：核电站，08：水电站水库")
-	@ApiImplicitParams({@ApiImplicitParam(name = "dxlx",value = "对象类别",paramType = "path",dataType = "String",required = true,allowableValues = "01,02,03,04,05,06,07,08"),
+	@ApiOperation(value = "对象信息基础信息",notes = "{dxlx}对象类别，01：重点单位(防火)，02：重点单位(灭火)，03：建筑信息，04：油气管线（废弃），05：公路隧道（废弃），06：石化单位，07：核电站，08：水电站水库")
+	@ApiImplicitParams({@ApiImplicitParam(name = "dxlx",value = "对象类别",paramType = "path",dataType = "String",required = true,allowableValues = "01,02,03,06,07,08"),
 			@ApiImplicitParam(name = "dxbh",value = "对象ID",paramType = "path",dataType = "String",required = true)})
 	public ResponseEntity<String> getDxxx(@PathVariable String dxlx,
 										  @PathVariable String dxbh) {

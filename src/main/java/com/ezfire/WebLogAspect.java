@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -46,7 +47,8 @@ public class WebLogAspect {
 	@AfterReturning(returning = "ret", pointcut = "logPointCut()")// returning的值和doAfterReturning的参数名一致
 	public void doAfterReturning(Object ret) throws Throwable {
 		// 处理完请求，返回内容
-		s_logger.info("返回值 : " + ret);
+		ResponseEntity<String> result = (ResponseEntity<String>) ret;
+		s_logger.info("返回值 : " + result.getStatusCode());
 	}
 
 	@Around("logPointCut()")

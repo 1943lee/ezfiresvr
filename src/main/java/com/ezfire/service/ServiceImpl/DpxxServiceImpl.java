@@ -2,12 +2,10 @@ package com.ezfire.service.ServiceImpl;
 
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
-import com.ezfire.common.ESClient;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Dpxx;
 import com.ezfire.service.DpxxService;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class DpxxServiceImpl implements DpxxService{
 	private static Logger s_logger = LoggerFactory.getLogger(ZqxxServiceImpl.class);
-	private static RestHighLevelClient client = ESClient.getHightClient();
 
 	public String getDpxxByZQBH(String zqbh) {
 		if(null == zqbh || zqbh.isEmpty()) {

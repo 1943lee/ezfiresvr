@@ -28,7 +28,6 @@ import java.util.*;
 @Service
 public class ZqxxServiceImpl implements ZqxxService {
 	private static Logger s_logger = LoggerFactory.getLogger(ZqxxServiceImpl.class);
-	private static RestHighLevelClient client = ESClient.getHightClient();
 
 	@Override
 	public String getZqxxByZQBH(String zqbh) {
@@ -101,6 +100,7 @@ public class ZqxxServiceImpl implements ZqxxService {
 			s_logger.info(searchRequest.toString());
 
 			List<AroundResource> aroundResultList = new ArrayList<>();
+			RestHighLevelClient client = ESClient.getHightClient();
 			SearchResponse response = client.search(searchRequest);
 			for (SearchHit searchHit : response.getHits()) {
 				AroundResource aroundResult = new AroundResource();

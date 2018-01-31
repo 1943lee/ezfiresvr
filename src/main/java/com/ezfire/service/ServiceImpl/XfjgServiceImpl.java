@@ -2,12 +2,10 @@ package com.ezfire.service.ServiceImpl;
 
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
-import com.ezfire.common.ESClient;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Xfjg;
 import com.ezfire.service.XfjgService;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class XfjgServiceImpl implements XfjgService {
 	private static Logger s_logger = LoggerFactory.getLogger(XfjgServiceImpl.class);
-	private static RestHighLevelClient client = ESClient.getHightClient();
 
 	@Override
 	public String getXfjgs(String nbbm) {

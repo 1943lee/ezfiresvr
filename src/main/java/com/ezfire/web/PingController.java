@@ -4,8 +4,8 @@ import com.ezfire.common.ESClient;
 import org.elasticsearch.action.main.MainResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.cluster.ClusterName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,28 +20,24 @@ import java.io.IOException;
 @RequestMapping("/ping")
 @ApiIgnore
 public class PingController {
-	private static Logger s_logger = LoggerFactory.getLogger(PingController.class);
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String ping() {
-		s_logger.info("ezFireSvr Started");
-		return "ezFireSvr Started";
+	public ResponseEntity<String> ping() {
+		return new ResponseEntity<String>("ezFireSvr Started", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/elastic/nodes", method = RequestMethod.GET)
-	public String pingElastic() {
-		s_logger.info("/elastic/nodes");
-
+	public ResponseEntity<String> pingElastic() {
 		RestHighLevelClient client = ESClient.getHightClient();
 
 		try {
 			MainResponse mainResponse = client.info();
 			ClusterName clusterName = mainResponse.getClusterName();
 
-			return clusterName.value();
+			return new ResponseEntity<String>(clusterName.value(),HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return "Server Error Occurred";
+			return new ResponseEntity<String>("Server Error Occurred",HttpStatus.OK);
 		}
 	}
 }

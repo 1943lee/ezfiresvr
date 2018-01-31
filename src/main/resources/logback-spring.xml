@@ -43,12 +43,14 @@
         </encoder>
     </appender>
 
-    <logger name="com.controller" level="DEBUG" />
-    <logger name="com.common" level="DEBUG"/>
+    <logger name="com.ezfire.controller" level="DEBUG" />
+    <logger name="com.ezfire.common" level="DEBUG"/>
+    <logger name="com.ezfire.dao" level="DEBUG"/>
+    <logger name="org.mybatis.spring" level="DEBUG"/>
 
     <root level="INFO">
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="ERROR_FILE" />
-        <appender-ref ref="STDOUT"/>
+        <!--<appender-ref ref="STDOUT"/>-->
     </root>
 </configuration>

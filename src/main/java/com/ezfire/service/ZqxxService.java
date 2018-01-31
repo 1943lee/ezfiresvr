@@ -9,4 +9,6 @@ public interface ZqxxService {
 	String getZqxxByZQBH(String zqbh);
 
 	String getZqxxByCondition(Map<String, Object> condition);
+
+	String getNearestZqxx(double longitude, double latitude, double radius, int dateRange);
 }

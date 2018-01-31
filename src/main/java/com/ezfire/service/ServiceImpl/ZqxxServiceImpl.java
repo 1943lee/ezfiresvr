@@ -1,19 +1,26 @@
 package com.ezfire.service.ServiceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.ezfire.common.*;
+import com.ezfire.domain.AroundResource;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.ZqxxService;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by lcy on 2018/1/21.
@@ -62,5 +69,67 @@ public class ZqxxServiceImpl implements ZqxxService {
 		s_logger.info(searchRequest.toString());
 
 		return EsQueryUtils.getListResults(searchRequest);
+	}
+
+	@Override
+	public String getNearestZqxx(double longitude, double latitude, double radius, int dateRange) {
+		// 检查坐标是否合法
+		if(!ComMethod.isValidPoint(longitude, latitude)) {
+			return null;
+		}
+
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+			// 周边条件
+			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn, ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
+			// 时间条件
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String nowDate = sdf.format(new Date());
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.MINUTE, - dateRange);
+			String rangeStart = sdf.format(calendar.getTime());
+			boolQueryBuilder.must().add(QueryBuilders.rangeQuery("LASJ").gte(rangeStart).lte(nowDate));
+
+			searchSourceBuilder.query(boolQueryBuilder)
+					.timeout(ComDefine.elasticTimeOut)
+					.size(ComDefine.elasticMaxSearchSize)
+					.fetchSource(ComMethod.getBeanFields(Zqxx.class),null);
+
+			SearchRequest searchRequest = new SearchRequest().source(searchSourceBuilder).indices(ComDefine.fire_zqxx_read).types("zqxx");
+			s_logger.info(searchRequest.toString());
+
+			List<AroundResource> aroundResultList = new ArrayList<>();
+			SearchResponse response = client.search(searchRequest);
+			for (SearchHit searchHit : response.getHits()) {
+				AroundResource aroundResult = new AroundResource();
+				Map<String,Object> source = searchHit.getSource();
+				double jd = source.containsKey("JD") ? ComConvert.toDouble(source.get("JD"), 0.0) : 0.0;
+				double wd = source.containsKey("WD") ? ComConvert.toDouble(source.get("WD"), 0.0) : 0.0;
+				double distance = ComMethod.getSphericalDistance(longitude,latitude,jd,wd);
+				// 二次校验
+				if(distance > radius) {
+					continue;
+				}
+				aroundResult.setContent(JSON.toJSONString(source));
+				aroundResult.setDistance(distance);
+
+				aroundResultList.add(aroundResult);
+			}
+
+			if(aroundResultList.size() == 0) {
+				return "";
+			}
+
+			// 排序，取最近的灾情信息
+			aroundResultList.sort(Comparator.comparingDouble(AroundResource::getDistance));
+
+			return aroundResultList.get(0).getContent();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

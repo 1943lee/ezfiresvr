@@ -57,4 +57,23 @@ public class ZqxxController {
 			return new ResponseEntity<>(zqxx, HttpStatus.NOT_FOUND);
 		}
 	}
+
+	@RequestMapping(value = "/near",method = RequestMethod.GET,produces = "application/json")
+	@ApiOperation(value = "查询最近的灾情信息", notes = "提供经纬度（gps坐标）、半径（米）、时间范围（分钟），返回符合条件的最近的灾情信息", response = Zqxx.class)
+	@ApiImplicitParams({@ApiImplicitParam(name = "longitude", value = "经度", paramType = "query", dataType = "double"),
+			@ApiImplicitParam(name = "latitude", value = "纬度", paramType = "query", dataType = "double"),
+			@ApiImplicitParam(name = "radius", value = "半径，米为单位", paramType = "query", dataType = "double"),
+			@ApiImplicitParam(name = "dateRange", value = "时间范围，分钟为单位", paramType = "query", dataType = "int")})
+	public ResponseEntity<String> getNearestZqxx(@RequestParam double longitude,
+												 @RequestParam double latitude,
+												 @RequestParam double radius,
+												 @RequestParam int dateRange) {
+		String zqxx = zqxxService.getNearestZqxx(longitude, latitude, radius, dateRange);
+		if(null != zqxx) {
+			return new ResponseEntity<>(zqxx, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>("{\"message\":\"输入不合法\"}", HttpStatus.BAD_REQUEST);
+		}
+	}
 }

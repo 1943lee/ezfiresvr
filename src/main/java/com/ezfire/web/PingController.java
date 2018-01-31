@@ -34,10 +34,10 @@ public class PingController {
 			MainResponse mainResponse = client.info();
 			ClusterName clusterName = mainResponse.getClusterName();
 
-			return new ResponseEntity<String>(clusterName.value(),HttpStatus.OK);
+			return new ResponseEntity<>(clusterName.value(),HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();
-			return new ResponseEntity<String>("Server Error Occurred",HttpStatus.OK);
+			return new ResponseEntity<>("Server Error Occurred",HttpStatus.OK);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.ezfire.common;
 
 import com.ezfire.Application;
+import com.ezfire.domain.AppConfig;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -28,9 +29,10 @@ public class ESClient {
 	{
 		try
 		{
-			String[] serverList = Application.getAppConfig().getProperty("elasticsearch.hosts").split(";");
-			String username = Application.getAppConfig().getProperty("elasticsearch.username");
-			String password = Application.getAppConfig().getProperty("elasticsearch.password");
+			AppConfig esConfig = Application.myContext.getBean("elasticConfig", AppConfig.class);
+			String[] serverList = esConfig.getEsHosts().split(";");
+			String username = esConfig.getEsUserName();
+			String password = esConfig.getEsPassword();
 
 			if(null != serverList && serverList.length > 0) {
 				HttpHost[] hosts = new HttpHost[serverList.length];

@@ -4,6 +4,19 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <!--es配置，多个节点用分号;隔开-->
+    <bean id="elasticConfig" class="com.ezfire.domain.AppConfig">
+        <property name="esHosts">
+            <value>192.168.11.107:9200</value>
+        </property>
+        <property name="esUserName">
+            <value>elastic</value>
+        </property>
+        <property name="esPassword">
+            <value>elastickedacom</value>
+        </property>
+    </bean>
+
     <!--ezview数据库-->
     <bean id="ezViewDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName">

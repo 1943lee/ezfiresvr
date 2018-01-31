@@ -9,16 +9,12 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Created by lcy on 2018/1/20.
@@ -45,42 +41,8 @@ public class Application extends SpringBootServletInitializer {
 
 	}
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-		String propertiesFilename = getPropertiesFilename();
-
-		PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-		configurer.setLocation(new ClassPathResource(propertiesFilename));
-
-		return configurer;
-	}
-
-	private static String getPropertiesFilename() {
-		String activeProfile = getProfile();
-		return activeProfile + ".properties";
-	}
-
 	private static String getProfile() {
 		return System.getProperty("spring.profiles.active", "ezfiresvr");
-	}
-
-	private static Properties appConfig;
-
-	public static Properties getAppConfig(){
-		if(appConfig != null){
-			return appConfig;
-		}
-
-		String propertiesFilename = getPropertiesFilename();
-
-		try {
-			appConfig = new Properties();
-			appConfig.load(Application.class.getClassLoader().getResourceAsStream(propertiesFilename));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return appConfig;
 	}
 
 	@Bean

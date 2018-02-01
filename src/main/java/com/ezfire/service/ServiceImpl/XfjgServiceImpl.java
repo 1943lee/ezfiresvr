@@ -1,5 +1,6 @@
 package com.ezfire.service.ServiceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
@@ -62,5 +63,12 @@ public class XfjgServiceImpl implements XfjgService {
 		s_logger.info(searchRequest.toString());
 
 		return EsQueryUtils.getListResults(searchRequest);
+	}
+
+	@Override
+	public String getXfjgById(String dwbh) {
+		Xfjg xfjg = JSON.parseObject(EsQueryUtils.queryAllById(ComDefine.fire_xfdw_read,"xfdw",dwbh,"DWBH"),Xfjg.class);
+
+		return JSON.toJSONString(xfjg);
 	}
 }

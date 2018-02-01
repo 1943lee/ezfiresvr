@@ -26,7 +26,7 @@ public class UserController {
 	@RequestMapping(value = "/all",produces = "application/json",method = RequestMethod.GET)
 	@ApiOperation(value = "获取全部人员信息",response = User.class,responseContainer = "List")
 	public ResponseEntity<String> getAllUsers() {
-		return new ResponseEntity<String>(userService.getAllUsers(), HttpStatus.OK);
+		return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "",produces = "application/json",method = RequestMethod.GET)
@@ -35,10 +35,10 @@ public class UserController {
 	public ResponseEntity<String> getUserByDlm(@RequestParam String dlm) {
 		String result = userService.getUserByDlm(dlm);
 		if(null == result) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 		}
 		else {
-			return new ResponseEntity<String>(result, HttpStatus.OK);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
 }

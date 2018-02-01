@@ -30,7 +30,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("ezfire service restful apis")
-                .description("restful api descriptions")
+                .description("ezfiresvr restful接口说明")
                 .version("1.0")
                 .build();
     }

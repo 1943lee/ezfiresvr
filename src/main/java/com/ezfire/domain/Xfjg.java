@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by lcy on 2018/1/22.
  */
-@ApiModel(value = "消防机构信息",description = "字段全部大写")
+@ApiModel(description = "消防机构")
 public class Xfjg {
 	@ApiModelProperty(value = "单位名称")
 	private String dwmc;
@@ -20,6 +20,7 @@ public class Xfjg {
 	private String dwjb;
 	@ApiModelProperty(value = "单位类别")
 	private DWLB dwlb;
+	@ApiModel(description = "单位类别")
 	private static class DWLB {
 		@ApiModelProperty(value = "单位类别代码")
 		private String id;
@@ -48,6 +49,7 @@ public class Xfjg {
 	private String dwms;
 	@ApiModelProperty(value = "所在地行政区划")
 	private SZDXZQH szdxzqh;
+	@ApiModel(description = "所在地行政区划")
 	private static class SZDXZQH {
 		@ApiModelProperty(value = "行政区划编号")
 		private String xzqhbh;

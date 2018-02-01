@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by lcy on 2018/1/23.
  */
-@ApiModel(value = "周边资源")
+@ApiModel(description = "周边资源")
 public class AroundResource {
 	@ApiModelProperty(value = "资源分类id")
 	private String resourceType;

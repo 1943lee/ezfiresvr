@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by lcy on 2018/1/21.
  */
-@ApiModel(value = "灾情基本信息",description = "字段全部大写")
+@ApiModel(description = "灾情信息")
 public class Zqxx {
 	@ApiModelProperty(value = "灾情编号")
 	private String zqbh;
@@ -55,9 +55,13 @@ public class Zqxx {
 	@ApiModelProperty(value = "所在地行政区划")
 	private SZDXZQH szdxzqh;
 
+	@ApiModel(description = "灾情类型")
 	private static class ZQLX {
+		@ApiModelProperty(value = "类型id")
 		private String id;
+		@ApiModelProperty(value = "类型名称")
 		private String value;
+		@ApiModelProperty(value = "灾情类型内部编码")
 		private String chain;
 
 		public String getId() {
@@ -85,8 +89,11 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "灾情等级")
 	private static class ZQDJ {
+		@ApiModelProperty(value = "灾情等级id")
 		private String id;
+		@ApiModelProperty(value = "灾情等级名称")
 		private String value;
 
 		public String getId() {
@@ -106,8 +113,11 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "灾情状态")
 	private static class ZQZT {
+		@ApiModelProperty(value = "灾情状态id")
 		private String id;
+		@ApiModelProperty(value = "灾情状态名称")
 		private String value;
 
 		public String getId() {
@@ -127,10 +137,15 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "灾情对象")
 	private static class ZQDX {
+		@ApiModelProperty(value = "灾情对象类型")
 		private String dxlx;
+		@ApiModelProperty(value = "灾情对象编号")
 		private String dxbh;
+		@ApiModelProperty(value = "灾情对象名称")
 		private String dxmc;
+		@ApiModelProperty(value = "灾情对象概述")
 		private String dxgs;
 
 		public String getDxlx() {
@@ -166,9 +181,13 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "灾情位置")
 	private static class ZQWZ {
+		@ApiModelProperty(value = "灾情位置序号")
 		private String sx;
+		@ApiModelProperty(value = "灾情位置经度")
 		private String jd;
+		@ApiModelProperty(value = "灾情位置纬度")
 		private String wd;
 
 		public String getSx() {
@@ -196,10 +215,15 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "现场操作人员")
 	private static class XCZHRY {
+		@ApiModelProperty(value = "人员姓名")
 		private String ryxm;
+		@ApiModelProperty(value = "岗位职责")
 		private String gwzz;
+		@ApiModelProperty(value = "联系电话")
 		private String lxdh;
+		@ApiModelProperty(value = "显示顺序")
 		private String xssx;
 
 		public String getRyxm() {
@@ -235,9 +259,13 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "所在地消防机构")
 	private static class SZDXFJG {
+		@ApiModelProperty(value = "消防机构编号")
 		private String xfjgbh;
+		@ApiModelProperty(value = "消防机构名称")
 		private String xfjgmc;
+		@ApiModelProperty(value = "消防机构内部编码")
 		private String xfjgnbbm;
 
 		public String getXfjgbh() {
@@ -265,9 +293,13 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "所在地行政区划")
 	private static class SZDXZQH {
+		@ApiModelProperty(value = "行政区划编号")
 		private String xzqhbh;
+		@ApiModelProperty(value = "行政区划名称")
 		private String xzqhmc;
+		@ApiModelProperty(value = "行政区划内部编码")
 		private String xzqhnbbm;
 
 		public String getXzqhbh() {

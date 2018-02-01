@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by lcy on 2018/1/31.
  */
-@ApiModel(value = "用户信息")
+@ApiModel(description = "用户信息")
 public class User {
 	@ApiModelProperty(value = "登录名")
 	private String dlm;

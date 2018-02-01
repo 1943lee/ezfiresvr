@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by lcy on 2018/1/24.
  */
-@ApiModel(value = "调派信息")
+@ApiModel(description = "调派信息")
 public class Dpxx {
 	@ApiModelProperty(value = "灾情编号")
 	private String zqbh;
@@ -37,6 +37,7 @@ public class Dpxx {
 	@ApiModelProperty(value = "调派器材数")
 	private DPQC dpqc;
 
+	@ApiModel(description = "所在地消防机构")
 	private static class SZDXFJG {
 		@ApiModelProperty(value = "消防机构编号")
 		private String xfjgbh;
@@ -70,6 +71,7 @@ public class Dpxx {
 		}
 	}
 
+	@ApiModel(description = "调派专家")
 	private static class DPZJ {
 		@ApiModelProperty(value = "专家姓名")
 		private String zjxm;
@@ -133,6 +135,7 @@ public class Dpxx {
 		}
 	}
 
+	@ApiModel(description = "调派人员")
 	private static class DPRY {
 		@ApiModelProperty(value = "人员编号")
 		private String rybh;
@@ -216,6 +219,7 @@ public class Dpxx {
 		}
 	}
 
+	@ApiModel(description = "调派车辆")
 	private static class DPCL {
 		@ApiModelProperty(value = "车辆编号")
 		private String clbh;
@@ -289,6 +293,7 @@ public class Dpxx {
 		}
 	}
 
+	@ApiModel(description = "调派器材")
 	private static class DPQC {
 		@ApiModelProperty(value = "器材编号")
 		private String qcbh;

@@ -3,10 +3,44 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ezfire.dao.UserDao">
     <select id="getAllUsers" resultType="com.ezfire.domain.User">
-        select * from B_RS_RY t
+        select a.dlm as dlm,
+       a.jh as jh,
+       a.jyxm as jyxm,
+       a.zw as zw,
+       a.lsdw as lsdw,
+       b.dwmc as dwmc,
+       b.dwnbbm as dwnbbm,
+       b.dwjb as dwjb,
+       b.ssxq as xzqhbh,
+       c.xzmc as xzqhmc,
+       c.xznbbm as xzqhnbbm,
+       a.sfzh as sfzh,
+       a.lxdh as lxdh,
+       a.sjhm as sjhm
+        from B_RS_RY a
+        left join B_RS_DW b on a.lsdw = b.dwbh
+        left join B_QJ_XZQY c on b.ssxq = c.xzbm
+        order by dwjb
     </select>
 
     <select id="getUserByDlm" parameterType="String" resultType="com.ezfire.domain.User">
-        select * from B_RS_RY t where dlm = #{dlm}
+        select a.dlm as dlm,
+       a.jh as jh,
+       a.jyxm as jyxm,
+       a.zw as zw,
+       a.lsdw as lsdw,
+       b.dwmc as dwmc,
+       b.dwnbbm as dwnbbm,
+       b.dwjb as dwjb,
+       b.ssxq as xzqhbh,
+       c.xzmc as xzqhmc,
+       c.xznbbm as xzqhnbbm,
+       a.sfzh as sfzh,
+       a.lxdh as lxdh,
+       a.sjhm as sjhm
+        from B_RS_RY a
+        left join B_RS_DW b on a.lsdw = b.dwbh
+        left join B_QJ_XZQY c on b.ssxq = c.xzbm
+        where dlm = #{dlm}
     </select>
 </mapper>

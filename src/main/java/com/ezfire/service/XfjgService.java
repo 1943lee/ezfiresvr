@@ -5,4 +5,6 @@ package com.ezfire.service;
  */
 public interface XfjgService {
 	String getXfjgs(String nbbm);
+
+	String getXfjgById(String dwbh);
 }

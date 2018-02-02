@@ -1,5 +1,7 @@
 package com.ezfire.service;
 
+import com.ezfire.domain.RestfulParams.AlarmCondition;
+
 import java.util.Map;
 
 /**
@@ -11,4 +13,6 @@ public interface ZqxxService {
 	String getZqxxByCondition(Map<String, Object> condition);
 
 	String getNearestZqxx(double longitude, double latitude, double radius, int dateRange);
+
+	String getZqxxSearch(AlarmCondition conditions);
 }

@@ -1,5 +1,6 @@
 package com.ezfire.web;
 
+import com.ezfire.domain.RestfulParams.AlarmCondition;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.ZqxxService;
 import io.swagger.annotations.Api;
@@ -11,8 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lcy on 2018/1/21.
@@ -40,14 +40,17 @@ public class ZqxxController {
 	@ApiOperation(value = "查询灾情信息", notes = "按照灾情立案时间降序排列", response = Zqxx.class, responseContainer = "List")
 	@ApiImplicitParams({@ApiImplicitParam(name = "xfjgnbbm", value = "内部编码,默认为空", paramType = "query", dataType = "String"),
 			@ApiImplicitParam(name = "from", value = "from,默认0", defaultValue = "0", paramType = "query", dataType = "int"),
-			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int")})
+			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean")})
 	public ResponseEntity<String> getZqxxByCondition(@RequestParam(defaultValue = "") String xfjgnbbm,
 													 @RequestParam(defaultValue = "0") int from,
-													 @RequestParam(defaultValue = "50") int size) {
+													 @RequestParam(defaultValue = "50") int size,
+													 @RequestParam(defaultValue = "true") boolean notClosed) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
 		condition.put("from", from);
 		condition.put("size", size);
+		condition.put("notClosed", notClosed);
 
 		String zqxx = zqxxService.getZqxxByCondition(condition);
 		if(null != zqxx && !zqxx.isEmpty()) {
@@ -74,6 +77,19 @@ public class ZqxxController {
 		}
 		else {
 			return new ResponseEntity<>("{\"message\":\"输入不合法\"}", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/idsSearch",method = RequestMethod.POST,produces = "application/json",consumes = "application/json")
+	@ApiOperation(value = "根据传入条件获取灾情信息",notes = "支持多个灾情编号,支持指定返回字段")
+	@ApiImplicitParam(name = "conditions",paramType = "body",dataType = "AlarmCondition")
+	public ResponseEntity<String> getZqxxStates(@RequestBody AlarmCondition conditions) {
+		String zqxxs = zqxxService.getZqxxSearch(conditions);
+		if(null != zqxxs) {
+			return new ResponseEntity<>(zqxxs, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>("{\"message\":\"未找到符合条件的灾情信息\"}", HttpStatus.NOT_FOUND);
 		}
 	}
 }

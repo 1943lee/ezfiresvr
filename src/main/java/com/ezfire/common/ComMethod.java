@@ -2,6 +2,7 @@ package com.ezfire.common;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 
 /**
@@ -91,6 +92,15 @@ public class ComMethod {
 		}
 		else {
 			return false;
+		}
+	}
+
+	public static String encodeStr(String str) {
+		try {
+			return new String(str.getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

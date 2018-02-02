@@ -3,6 +3,7 @@ package com.ezfire.service.ServiceImpl;
 import com.alibaba.fastjson.JSON;
 import com.ezfire.common.*;
 import com.ezfire.domain.AroundResource;
+import com.ezfire.domain.RestfulParams.AlarmCondition;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.ZqxxService;
 import org.elasticsearch.action.search.SearchRequest;
@@ -47,11 +48,16 @@ public class ZqxxServiceImpl implements ZqxxService {
 		String nbbm = ComConvert.toString(condition.get("xfjgnbbm"));
 		int from = ComConvert.toInteger(condition.get("from"), 0);
 		int size = ComConvert.toInteger(condition.get("size"), 50);
+		// 是否只查询已结案的灾情
+		boolean caseNotClosed = ComConvert.toBoolean(condition.get("notClosed"), true);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		if(!nbbm.isEmpty()) {
 			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", nbbm));
+		}
+		if(caseNotClosed) {
+			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", new String[] {"10","11","12"}));
 		}
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 		searchSourceBuilder.query(boolQueryBuilder)
@@ -128,6 +134,55 @@ public class ZqxxServiceImpl implements ZqxxService {
 			return aroundResultList.get(0).getContent();
 		}
 		catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public String getZqxxSearch(AlarmCondition conditions) {
+		//1. 灾情编号，可能为数组
+		List<String> zqbhs = new ArrayList<>();
+		if(conditions.getZqbh() == null) {
+
+		}
+		else if(conditions.getZqbh().getClass().equals(ArrayList.class)) {
+			zqbhs.addAll((Collection<? extends String>) conditions.getZqbh());
+		}
+		else {
+			zqbhs.add(conditions.getZqbh().toString());
+		}
+		//3.includes
+		String[] includes = conditions.getIncludes();
+
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		if(!zqbhs.isEmpty()) {
+			boolQueryBuilder.must().add(QueryBuilders.termsQuery("ZQBH", zqbhs));
+		}
+		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+		searchSourceBuilder.query(boolQueryBuilder)
+				.timeout(ComDefine.elasticTimeOut)
+				.size(ComDefine.elasticMaxSearchSize)
+				.sort("LASJ", SortOrder.DESC);
+		if(null != includes && includes.length > 0) {
+			searchSourceBuilder.fetchSource(includes,null);
+		}
+
+		SearchRequest searchRequest = new SearchRequest()
+				.source(searchSourceBuilder)
+				.indices(ComDefine.fire_zqxx_read)
+				.types("zqxx");
+		s_logger.info(searchRequest.toString());
+
+		try {
+			SearchResponse searchResponse = ESClient.getHightClient().search(searchRequest);
+			Map<String,Object> result = new HashMap<>();
+			for(SearchHit searchHit : searchResponse.getHits()) {
+				result.put(searchHit.getId(),searchHit.getSource());
+			}
+			return JSON.toJSONString(result);
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}

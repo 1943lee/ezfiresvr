@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezfire.dao.FireDangerDao">
+    <select id="getAll" resultType="com.ezfire.domain.FireDanger" parameterType="java.util.HashMap">
+        <include refid="PageSQLHead" />
+        select a.bh,
+        a.zwm,
+        a.ywm,
+        a.lb,
+        a.xm,
+        a.fzs,
+        a.lbid,
+        b.nbbm from a_fire_dandg a
+        left join B_QJ_ZDX b on a.lbid = b.zdbh where b.zdlx = '10006'
+        <if test="nbbm != null and nbbm != ''">
+              AND instr(b.nbbm,#{nbbm},1,1)=1
+        </if>
+        <if test="zwm != null and zwm != ''">
+            AND a.zwm like '%'||#{zwm}||'%'
+        </if>
+        <if test="ywm != null and ywm != ''">
+            AND a.ywm like '%'||#{ywm}||'%'
+        </if>
+        <if test="fzs != null and fzs != ''">
+            AND a.fzs like '%'||#{fzs}||'%'
+        </if>
+        ORDER BY b.zdjb
+        <include refid="PageSQLFoot" />
+    </select>
+
+    <select id="getDictionary" resultType="com.ezfire.domain.Dictionary">
+        SELECT * FROM B_QJ_ZDX
+          WHERE ZDLX = '10006'
+          ORDER BY ZDJB
+    </select>
+
+    <select id="getDetail" resultType="com.ezfire.domain.FireDanger" parameterType="String">
+        SELECT * FROM a_fire_dandg
+        WHERE bh = #{bh, jdbcType=VARCHAR}
+    </select>
+
+    <sql id="PageSQLHead">
+        SELECT * FROM (SELECT ROWNUM AS NUMROW, Z.* from (
+    </sql>
+
+    <sql id="PageSQLFoot">
+        <![CDATA[ ) Z  where rownum<=#{to}) WHERE NUMROW > #{from} ]]>
+    </sql>
+</mapper>

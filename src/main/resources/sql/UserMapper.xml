@@ -41,6 +41,6 @@
         from B_RS_RY a
         left join B_RS_DW b on a.lsdw = b.dwbh
         left join B_QJ_XZQY c on b.ssxq = c.xzbm
-        where dlm = #{dlm}
+        where dlm = #{dlm, jdbcType=VARCHAR}
     </select>
 </mapper>

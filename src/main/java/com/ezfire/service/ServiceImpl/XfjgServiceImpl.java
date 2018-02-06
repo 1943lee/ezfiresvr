@@ -54,6 +54,7 @@ public class XfjgServiceImpl implements XfjgService {
 				.timeout(ComDefine.elasticTimeOut)
 				.size(ComDefine.elasticMaxSearchSize)
 				.sort("DWJB", SortOrder.ASC)
+				.sort("SZDXZQH.XZQHBH", SortOrder.ASC)
 				.fetchSource(ComMethod.getBeanFields(Xfjg.class), null);
 
 		SearchRequest searchRequest = new SearchRequest()

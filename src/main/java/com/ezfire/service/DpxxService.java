@@ -5,4 +5,6 @@ package com.ezfire.service;
  */
 public interface DpxxService {
 	String getDpxxByZQBH(String zqbh);
+
+	String getDpxxZqbhByClbhOrCphm(String key, int type);
 }

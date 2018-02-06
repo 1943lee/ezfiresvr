@@ -41,16 +41,19 @@ public class ZqxxController {
 	@ApiImplicitParams({@ApiImplicitParam(name = "xfjgnbbm", value = "内部编码,默认为空", paramType = "query", dataType = "String"),
 			@ApiImplicitParam(name = "from", value = "from,默认0", defaultValue = "0", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int"),
-			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean")})
+			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean"),
+			@ApiImplicitParam(name = "onlyStressed", value = "onlyStressed,为true时表示只查突出灾情，默认为false,表示查询全部", defaultValue = "false", paramType = "query", dataType = "boolean")})
 	public ResponseEntity<String> getZqxxByCondition(@RequestParam(defaultValue = "") String xfjgnbbm,
 													 @RequestParam(defaultValue = "0") int from,
 													 @RequestParam(defaultValue = "50") int size,
-													 @RequestParam(defaultValue = "true") boolean notClosed) {
+													 @RequestParam(defaultValue = "true") boolean notClosed,
+													 @RequestParam(defaultValue = "false") boolean onlyStressed) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
 		condition.put("from", from);
 		condition.put("size", size);
 		condition.put("notClosed", notClosed);
+		condition.put("onlyStressed", onlyStressed);
 
 		String zqxx = zqxxService.getZqxxByCondition(condition);
 		if(null != zqxx && !zqxx.isEmpty()) {

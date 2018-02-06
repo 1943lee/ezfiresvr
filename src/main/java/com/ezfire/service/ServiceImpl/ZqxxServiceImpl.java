@@ -50,6 +50,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 		int size = ComConvert.toInteger(condition.get("size"), 50);
 		// 是否只查询已结案的灾情
 		boolean caseNotClosed = ComConvert.toBoolean(condition.get("notClosed"), true);
+		// 是否只查询突出灾情
+		boolean onlyStressed = ComConvert.toBoolean(condition.get("onlyStressed"), false);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -58,6 +60,9 @@ public class ZqxxServiceImpl implements ZqxxService {
 		}
 		if(caseNotClosed) {
 			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", new String[] {"10","11","12"}));
+		}
+		if(onlyStressed) {
+			boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQFL", "1"));
 		}
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 		searchSourceBuilder.query(boolQueryBuilder)

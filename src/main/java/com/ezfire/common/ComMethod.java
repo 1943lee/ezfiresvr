@@ -4,6 +4,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by lcy on 2018/1/22.
@@ -95,6 +97,11 @@ public class ComMethod {
 		}
 	}
 
+	/**
+	 * 字符串转码，处理中文输入
+	 * @param str
+	 * @return
+	 */
 	public static String encodeStr(String str) {
 		try {
 			return new String(str.getBytes("ISO-8859-1"), "UTF-8");
@@ -102,5 +109,27 @@ public class ComMethod {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 判断输入字符串是否为指定时间格式
+	 * @param str
+	 * @param format
+	 * @return
+	 */
+	public static boolean isValidDate(String str, SimpleDateFormat format) {
+		boolean convertSuccess = true;
+
+		try {
+			// 设置lenient为false.
+			// 否则SimpleDateFormat会比较宽松地验证日期，比如2007/02/29会被接受，并转换成2007/03/01
+			format.setLenient(false);
+			format.parse(str);
+		} catch (ParseException e) {
+			// e.printStackTrace();
+			// 如果throw java.text.ParseException或者NullPointerException，就说明格式不对
+			convertSuccess = false;
+		}
+		return convertSuccess;
 	}
 }

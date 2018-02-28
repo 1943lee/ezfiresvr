@@ -108,6 +108,10 @@ public class ComDefine {
 	 * 灭火救援专家
 	 */
 	public static String fire_mhjyzj_read = "fire_mhjyzj_read";
+	/**
+	 * 文书信息
+	 */
+	public static String fire_wsxx_read = "fire_wsxx_read";
 
 	/**
 	 * 消防水源

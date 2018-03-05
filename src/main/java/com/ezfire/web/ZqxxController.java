@@ -42,18 +42,21 @@ public class ZqxxController {
 			@ApiImplicitParam(name = "from", value = "from,默认0", defaultValue = "0", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean"),
-			@ApiImplicitParam(name = "onlyStressed", value = "onlyStressed,为true时表示只查突出灾情，默认为false,表示查询全部", defaultValue = "false", paramType = "query", dataType = "boolean")})
+			@ApiImplicitParam(name = "onlyStressed", value = "onlyStressed,为true时表示只查突出灾情，默认为false,表示查询全部", defaultValue = "false", paramType = "query", dataType = "boolean"),
+			@ApiImplicitParam(name = "userOrgLevel", value = "userOrgLevel,用户所在单位级别，部局为0依次递增,用于查询突出灾情，根据用户不同级别进行查询", paramType = "query", dataType = "int")})
 	public ResponseEntity<String> getZqxxByCondition(@RequestParam(defaultValue = "") String xfjgnbbm,
 													 @RequestParam(defaultValue = "0") int from,
 													 @RequestParam(defaultValue = "50") int size,
 													 @RequestParam(defaultValue = "true") boolean notClosed,
-													 @RequestParam(defaultValue = "false") boolean onlyStressed) {
+													 @RequestParam(defaultValue = "false") boolean onlyStressed,
+													 @RequestParam(defaultValue = "-1") int userOrgLevel) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
 		condition.put("from", from);
 		condition.put("size", size);
 		condition.put("notClosed", notClosed);
 		condition.put("onlyStressed", onlyStressed);
+		condition.put("userOrgLevel", userOrgLevel);
 
 		String zqxx = zqxxService.getZqxxByCondition(condition);
 		if(null != zqxx && !zqxx.isEmpty()) {

@@ -1,12 +1,10 @@
 package com.ezfire.service.ServiceImpl;
 
 import com.alibaba.fastjson.JSON;
-import com.ezfire.common.ComConvert;
-import com.ezfire.common.ComDefine;
-import com.ezfire.common.ComMethod;
-import com.ezfire.common.EsQueryUtils;
+import com.ezfire.common.*;
 import com.ezfire.domain.AroundResource;
 import com.ezfire.service.AroundService;
+import com.vividsolutions.jts.geom.Coordinate;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.springframework.stereotype.Service;
@@ -110,9 +108,17 @@ public class AroundServiceImpl implements AroundService {
 			aroundResult.setResourceType(resourceType);
 			aroundResult.setResourceTypeDescription(resourceTyneDescription);
 			Map<String,Object> source = searchHit.getSource();
-			double jd = source.containsKey("JD") ? ComConvert.toDouble(source.get("JD"), 0.0) : 0.0;
-			double wd = source.containsKey("WD") ? ComConvert.toDouble(source.get("WD"), 0.0) : 0.0;
-			double distance = ComMethod.getSphericalDistance(longitude,latitude,jd,wd);
+			double distance = 0.0;
+			if(!indexName.equals(ComDefine.fire_trsy_read)) {
+				double jd = source.containsKey("JD") ? ComConvert.toDouble(source.get("JD"), 0.0) : 0.0;
+				double wd = source.containsKey("WD") ? ComConvert.toDouble(source.get("WD"), 0.0) : 0.0;
+				distance = ComMethod.getSphericalDistance(longitude, latitude, jd, wd);
+			} else {
+				Map<String, Object> shape = (Map<String, Object>) source.get("SHAPE");
+				String shapeWkt = WktUtils.GeoShapeToWkt(shape);
+				Coordinate centerP = WktUtils.getCenterPoint(shapeWkt);
+				distance = ComMethod.getSphericalDistance(longitude, latitude, centerP.x, centerP.y);
+			}
 			// 二次校验
 			if(distance > radius) {
 				continue;

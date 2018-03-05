@@ -112,6 +112,14 @@ public class ComDefine {
 	 * 文书信息
 	 */
 	public static String fire_wsxx_read = "fire_wsxx_read";
+	/**
+	 * 人员信息
+	 */
+	public static String fire_ryxx_read = "fire_ryxx_read";
+	/**
+	 * 灾情指令信息
+	 */
+	public static String fire_zqzl_read = "fire_zqzl_read";
 
 	/**
 	 * 消防水源

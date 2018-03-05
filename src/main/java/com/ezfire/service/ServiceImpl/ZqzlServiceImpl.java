@@ -4,8 +4,8 @@ import com.ezfire.common.ComConvert;
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
-import com.ezfire.domain.Wsxx;
-import com.ezfire.service.WsxxService;
+import com.ezfire.domain.Zqzl;
+import com.ezfire.service.ZqzlService;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -20,14 +20,14 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 
 /**
- * Created by lcy on 2018/2/28.
+ * Created by lcy on 2018/3/5.
  */
 @Service
-public class WsxxServiceImpl implements WsxxService {
-	private static Logger s_logger = LoggerFactory.getLogger(WsxxServiceImpl.class);
+public class ZqzlServiceImpl implements ZqzlService {
+	private static Logger s_logger = LoggerFactory.getLogger(ZqzlService.class);
 
 	@Override
-	public String getWsxxByConditions(Map<String,Object> conditidons) {
+	public String getZqxxByConditions(Map<String, Object> conditidons) {
 		if(conditidons == null) return "";
 
 		int from = ComConvert.toInteger(conditidons.get("from"), 0);
@@ -39,25 +39,22 @@ public class WsxxServiceImpl implements WsxxService {
 		//1.zqbh
 		String zqbh = conditidons.containsKey("zqbh") ? conditidons.get("zqbh").toString() : "";
 		if(!zqbh.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH",zqbh));
-		//2.时间范围，时间以更新时间GXSJ为准
+		//2.时间范围，时间以更新时间FSSJ为准
 		String kssj = conditidons.containsKey("kssj") ?
 				(ComMethod.isValidDate(conditidons.get("kssj").toString(),dateFormat) ? conditidons.get("kssj").toString() : "") : "";
 		String jssj = conditidons.containsKey("jssj") ?
 				(ComMethod.isValidDate(conditidons.get("jssj").toString(),dateFormat) ? conditidons.get("jssj").toString() : "") : "";
 		if(!kssj.isEmpty() || !jssj.isEmpty()) {
-			RangeQueryBuilder rangeQueryBuilder = new RangeQueryBuilder("GXSJ");
+			RangeQueryBuilder rangeQueryBuilder = new RangeQueryBuilder("FSSJ");
 			if(!kssj.isEmpty()) rangeQueryBuilder.gte(kssj);
 			if(!jssj.isEmpty()) rangeQueryBuilder.lte(jssj);
 
 			boolQueryBuilder.must().add(rangeQueryBuilder);
 		}
 
-		//3.反馈机构内部编码，指定查看某个单位及以下的文书信息
-		String fkjgnbbm = conditidons.containsKey("nbbm") ? conditidons.get("nbbm").toString() : "";
-		if(!fkjgnbbm.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.prefixQuery("FKJG.XFJGNBBM",fkjgnbbm));
-		//4.反馈机构编号，指定查看某个单位的文书信息
-		String fkjgjgbh = conditidons.containsKey("jgbh") ? conditidons.get("jgbh").toString() : "";
-		if(!fkjgjgbh.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("FKJG.XFJGBH",fkjgnbbm));
+		//3.信息类型
+		String xxlx = conditidons.containsKey("xxlx") ? conditidons.get("xxlx").toString() : "";
+		if(!xxlx.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.prefixQuery("XXLX",xxlx));
 
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 
@@ -65,13 +62,13 @@ public class WsxxServiceImpl implements WsxxService {
 				.timeout(ComDefine.elasticTimeOut)
 				.from(from)
 				.size(size)
-				.sort("GXSJ", SortOrder.DESC)
-				.fetchSource(ComMethod.getBeanFields(Wsxx.class), null);
+				.sort("FSSJ", SortOrder.DESC)
+				.fetchSource(ComMethod.getBeanFields(Zqzl.class), null);
 
 		SearchRequest searchRequest = new SearchRequest()
 				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_wsxx_read)
-				.types("wsxx");
+				.indices(ComDefine.fire_zqzl_read)
+				.types("zqzl");
 		s_logger.info(searchRequest.toString());
 
 		return EsQueryUtils.getListResults(searchRequest);

@@ -52,6 +52,7 @@ public class ZqxxServiceImpl implements ZqxxService {
 		boolean caseNotClosed = ComConvert.toBoolean(condition.get("notClosed"), true);
 		// 是否只查询突出灾情
 		boolean onlyStressed = ComConvert.toBoolean(condition.get("onlyStressed"), false);
+		int userOrgLevel = ComConvert.toInteger(condition.get("userOrgLevel"), -1);
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
@@ -61,8 +62,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 		if(caseNotClosed) {
 			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", new String[] {"10","11","12"}));
 		}
-		if(onlyStressed) {
-			boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQFL", "1"));
+		if(onlyStressed && userOrgLevel != -1) {
+			boolQueryBuilder.must().add(QueryBuilders.termQuery("TCZQ.LEVEL_" + userOrgLevel, "1"));
 		}
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 		searchSourceBuilder.query(boolQueryBuilder)

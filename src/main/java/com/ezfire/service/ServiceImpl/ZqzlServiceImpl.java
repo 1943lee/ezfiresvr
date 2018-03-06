@@ -54,7 +54,11 @@ public class ZqzlServiceImpl implements ZqzlService {
 
 		//3.信息类型
 		String xxlx = conditidons.containsKey("xxlx") ? conditidons.get("xxlx").toString() : "";
-		if(!xxlx.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.prefixQuery("XXLX",xxlx));
+		if(!xxlx.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("XXLX",xxlx));
+
+		//4.指令类型
+		String zllx = conditidons.containsKey("zllx") ? conditidons.get("zllx").toString() : "";
+		if(!zllx.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("ZLLX",zllx));
 
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 

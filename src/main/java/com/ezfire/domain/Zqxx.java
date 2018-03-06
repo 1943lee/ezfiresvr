@@ -1,5 +1,8 @@
 package com.ezfire.domain;
 
+import com.ezfire.domain.comDomains.IdValue;
+import com.ezfire.domain.comDomains.SZDXFJG;
+import com.ezfire.domain.comDomains.SZDXZQH;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -14,8 +17,6 @@ public class Zqxx {
 	private String glbh;
 	@ApiModelProperty(value = "增援编号")
 	private String zybh;
-	@ApiModelProperty(value = "灾情分类，‘0’表示普通灾情，‘1’表示突出灾情", allowableValues = "0,1")
-	private String zqfl;
 	@ApiModelProperty(value = "灾情名称")
 	private String zqmc;
 	@ApiModelProperty(value = "灾情全称")
@@ -35,7 +36,7 @@ public class Zqxx {
 	@ApiModelProperty(value = "灾情等级")
 	private ZQDJ zqdj;
 	@ApiModelProperty(value = "灾情状态")
-	private ZQZT zqzt;
+	private IdValue zqzt;
 	@ApiModelProperty(value = "灾情对象")
 	private ZQDX zqdx;
 	@ApiModelProperty(value = "灾情位置")
@@ -114,30 +115,6 @@ public class Zqxx {
 		@ApiModelProperty(value = "灾情等级id")
 		private String id;
 		@ApiModelProperty(value = "灾情等级名称")
-		private String value;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
-
-	@ApiModel(description = "灾情状态")
-	private static class ZQZT {
-		@ApiModelProperty(value = "灾情状态id")
-		private String id;
-		@ApiModelProperty(value = "灾情状态名称")
 		private String value;
 
 		public String getId() {
@@ -279,74 +256,6 @@ public class Zqxx {
 		}
 	}
 
-	@ApiModel(description = "所在地消防机构")
-	private static class SZDXFJG {
-		@ApiModelProperty(value = "消防机构编号")
-		private String xfjgbh;
-		@ApiModelProperty(value = "消防机构名称")
-		private String xfjgmc;
-		@ApiModelProperty(value = "消防机构内部编码")
-		private String xfjgnbbm;
-
-		public String getXfjgbh() {
-			return xfjgbh;
-		}
-
-		public void setXfjgbh(String xfjgbh) {
-			this.xfjgbh = xfjgbh;
-		}
-
-		public String getXfjgmc() {
-			return xfjgmc;
-		}
-
-		public void setXfjgmc(String xfjgmc) {
-			this.xfjgmc = xfjgmc;
-		}
-
-		public String getXfjgnbbm() {
-			return xfjgnbbm;
-		}
-
-		public void setXfjgnbbm(String xfjgnbbm) {
-			this.xfjgnbbm = xfjgnbbm;
-		}
-	}
-
-	@ApiModel(description = "所在地行政区划")
-	private static class SZDXZQH {
-		@ApiModelProperty(value = "行政区划编号")
-		private String xzqhbh;
-		@ApiModelProperty(value = "行政区划名称")
-		private String xzqhmc;
-		@ApiModelProperty(value = "行政区划内部编码")
-		private String xzqhnbbm;
-
-		public String getXzqhbh() {
-			return xzqhbh;
-		}
-
-		public void setXzqhbh(String xzqhbh) {
-			this.xzqhbh = xzqhbh;
-		}
-
-		public String getXzqhmc() {
-			return xzqhmc;
-		}
-
-		public void setXzqhmc(String xzqhmc) {
-			this.xzqhmc = xzqhmc;
-		}
-
-		public String getXzqhnbbm() {
-			return xzqhnbbm;
-		}
-
-		public void setXzqhnbbm(String xzqhnbbm) {
-			this.xzqhnbbm = xzqhnbbm;
-		}
-	}
-
 	public String getZqbh() {
 		return zqbh;
 	}
@@ -369,14 +278,6 @@ public class Zqxx {
 
 	public void setZybh(String zybh) {
 		this.zybh = zybh;
-	}
-
-	public String getZqfl() {
-		return zqfl;
-	}
-
-	public void setZqfl(String zqfl) {
-		this.zqfl = zqfl;
 	}
 
 	public String getZqmc() {
@@ -451,11 +352,11 @@ public class Zqxx {
 		this.zqdj = zqdj;
 	}
 
-	public ZQZT getZqzt() {
+	public IdValue getZqzt() {
 		return zqzt;
 	}
 
-	public void setZqzt(ZQZT zqzt) {
+	public void setZqzt(IdValue zqzt) {
 		this.zqzt = zqzt;
 	}
 

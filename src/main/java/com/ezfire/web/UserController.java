@@ -1,6 +1,7 @@
 package com.ezfire.web;
 
 import com.ezfire.domain.User;
+import com.ezfire.domain.UserWeChat;
 import com.ezfire.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -33,7 +34,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/weChat",produces = "application/json",method = RequestMethod.GET)
-	@ApiOperation(value = "获取微信用户信息")
+	@ApiOperation(value = "获取微信用户信息",response = UserWeChat.class)
 	@ApiImplicitParams({@ApiImplicitParam(name = "orgId",value = "企业微信id",dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "userId",value = "用户id",dataType = "String",paramType = "query")})
 	public ResponseEntity<String> getUserByDlm(@RequestParam String orgId,

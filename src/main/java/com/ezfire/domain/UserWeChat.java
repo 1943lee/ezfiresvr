@@ -1,9 +1,6 @@
 package com.ezfire.domain;
 
-import com.ezfire.domain.comDomains.IdValue;
-import com.ezfire.domain.comDomains.SSXFDZ;
-import com.ezfire.domain.comDomains.SZDXFJG;
-import com.ezfire.domain.comDomains.SZDXZQH;
+import com.ezfire.domain.comDomains.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -25,15 +22,27 @@ public class UserWeChat {
 	@ApiModelProperty(value = "籍贯")
 	private String jg;
 	@ApiModelProperty(value = "岗位")
-	private IdValue gw;
+	private IdValueChain gw;
+	@ApiModelProperty(value = "职务")
+	private IdValueChain zw;
 	@ApiModelProperty(value = "照片")
 	private String zp;
-	@ApiModelProperty(value = "出生日期")
+	@ApiModelProperty(value = "出生日期，格式yyyy-MM-dd")
 	private String csrq;
 	@ApiModelProperty(value = "联系电话")
 	private String lxdh;
-	@ApiModelProperty(value = "人员类别，1.现役部队干部，2.现役部队士兵，3.合同制消防员")
-	private IdValue rylb;
+	@ApiModelProperty(value = "个人微信")
+	private String grwx;
+	@ApiModelProperty(value = "企业微信,格式：”企业微信号:用户ID“")
+	private String qywx;
+	@ApiModelProperty(value = "平台账户,格式：”平台ID:用户ID“")
+	private String ptzh;
+	@ApiModelProperty(value = "人员类别")
+	private IdValueChain rylb;
+	@ApiModelProperty(value = "人员状况")
+	private IdValueChain ryzk;
+	@ApiModelProperty(value = "是否专家，0.否，1.是")
+	private String sfzj;
 	@ApiModelProperty(value = "是否执勤，0.否，1.是")
 	private String sfzq;
 	@ApiModelProperty(value = "所属消防队站")
@@ -91,12 +100,20 @@ public class UserWeChat {
 		this.jg = jg;
 	}
 
-	public IdValue getGw() {
+	public IdValueChain getGw() {
 		return gw;
 	}
 
-	public void setGw(IdValue gw) {
+	public void setGw(IdValueChain gw) {
 		this.gw = gw;
+	}
+
+	public IdValueChain getZw() {
+		return zw;
+	}
+
+	public void setZw(IdValueChain zw) {
+		this.zw = zw;
 	}
 
 	public String getZp() {
@@ -123,12 +140,52 @@ public class UserWeChat {
 		this.lxdh = lxdh;
 	}
 
-	public IdValue getRylb() {
+	public String getGrwx() {
+		return grwx;
+	}
+
+	public void setGrwx(String grwx) {
+		this.grwx = grwx;
+	}
+
+	public String getQywx() {
+		return qywx;
+	}
+
+	public void setQywx(String qywx) {
+		this.qywx = qywx;
+	}
+
+	public String getPtzh() {
+		return ptzh;
+	}
+
+	public void setPtzh(String ptzh) {
+		this.ptzh = ptzh;
+	}
+
+	public IdValueChain getRylb() {
 		return rylb;
 	}
 
-	public void setRylb(IdValue rylb) {
+	public void setRylb(IdValueChain rylb) {
 		this.rylb = rylb;
+	}
+
+	public IdValueChain getRyzk() {
+		return ryzk;
+	}
+
+	public void setRyzk(IdValueChain ryzk) {
+		this.ryzk = ryzk;
+	}
+
+	public String getSfzj() {
+		return sfzj;
+	}
+
+	public void setSfzj(String sfzj) {
+		this.sfzj = sfzj;
 	}
 
 	public String getSfzq() {

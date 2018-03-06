@@ -6,14 +6,12 @@ import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Zqzl;
 import com.ezfire.service.ZqzlService;
-import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +22,6 @@ import java.util.Map;
  */
 @Service
 public class ZqzlServiceImpl implements ZqzlService {
-	private static Logger s_logger = LoggerFactory.getLogger(ZqzlService.class);
-
 	@Override
 	public String getZqxxByConditions(Map<String, Object> conditidons) {
 		if(conditidons == null) return "";
@@ -33,7 +29,6 @@ public class ZqzlServiceImpl implements ZqzlService {
 		int from = ComConvert.toInteger(conditidons.get("from"), 0);
 		int size = ComConvert.toInteger(conditidons.get("size"), 50);
 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//1.zqbh
@@ -62,19 +57,9 @@ public class ZqzlServiceImpl implements ZqzlService {
 
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.from(from)
-				.size(size)
-				.sort("FSSJ", SortOrder.DESC)
-				.fetchSource(ComMethod.getBeanFields(Zqzl.class), null);
-
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_zqzl_read)
-				.types("zqzl");
-		s_logger.info(searchRequest.toString());
-
-		return EsQueryUtils.getListResults(searchRequest);
+		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqzl_read, "zqzl",
+				ComMethod.getBeanFields(Zqzl.class), Strings.EMPTY_ARRAY, from, size,
+				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
+				EsQueryUtils::getListResults);
 	}
 }

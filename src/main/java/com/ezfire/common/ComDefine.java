@@ -14,112 +14,112 @@ public class ComDefine {
 	/**
 	 * ES查询超时设置
 	 */
-	public static TimeValue elasticTimeOut = new TimeValue(60, TimeUnit.SECONDS);
+	public final static TimeValue elasticTimeOut = new TimeValue(60, TimeUnit.SECONDS);
 
-	public static int elasticMaxSearchSize = 10000;
+	public final static int elasticMaxSearchSize = 10000;
 
 	/**
 	 * ES中SHAPE字段
 	 */
-	public static String esGeoShapeColumn = "SHAPE";
+	public final static String esGeoShapeColumn = "SHAPE";
 
 	/**
 	 * 灾情信息
 	 */
-	public static String fire_zqxx_read = "fire_zqxx_read";
-	public static String fire_zqxx_write = "fire_zqxx_write";
+	public final static String fire_zqxx_read = "fire_zqxx_read";
+	public final static String fire_zqxx_write = "fire_zqxx_write";
 	/**
 	 * 调派信息
 	 */
-	public static String fire_dpxx_read = "fire_dpxx_read";
-	public static String fire_dpxx_write = "fire_dpxx_write";
+	public final static String fire_dpxx_read = "fire_dpxx_read";
+	public final static String fire_dpxx_write = "fire_dpxx_write";
 	/**
 	 * 消火栓
 	 */
-	public static String fire_xhs_read = "fire_xhs_read";
-	public static String fire_xhs_write = "fire_xhs_write";
+	public final static String fire_xhs_read = "fire_xhs_read";
+	public final static String fire_xhs_write = "fire_xhs_write";
 	/**
 	 * 消防水池
 	 */
-	public static String fire_xfsc_read = "fire_xfsc_read";
-	public static String fire_xfsc_write = "fire_xfsh_write";
+	public final static String fire_xfsc_read = "fire_xfsc_read";
+	public final static String fire_xfsc_write = "fire_xfsh_write";
 	/**
 	 * 消防水鹤
 	 */
-	public static String fire_xfsh_read = "fire_xfsh_read";
-	public static String fire_xfsh_write = "fire_xfsh_write";
+	public final static String fire_xfsh_read = "fire_xfsh_read";
+	public final static String fire_xfsh_write = "fire_xfsh_write";
 	/**
 	 * 取水码头
 	 */
-	public static String fire_qsmt_read = "fire_qsmt_read";
-	public static String fire_qsmt_write = "fire_qsmt_write";
+	public final static String fire_qsmt_read = "fire_qsmt_read";
+	public final static String fire_qsmt_write = "fire_qsmt_write";
 	/**
 	 * 天然水源
 	 */
-	public static String fire_trsy_read = "fire_trsy_read";
-	public static String fire_trsy_write = "fire_trsy_write";
+	public final static String fire_trsy_read = "fire_trsy_read";
+	public final static String fire_trsy_write = "fire_trsy_write";
 	/**
 	 * 消防单位（机构）
 	 */
-	public static String fire_xfdw_read = "fire_xfdw_read";
-	public static String fire_xfdw_write = "fire_xfdw_write";
+	public final static String fire_xfdw_read = "fire_xfdw_read";
+	public final static String fire_xfdw_write = "fire_xfdw_write";
 	/**
 	 * 重点单位（防火）
 	 */
-	public static String fire_dwxx_read = "fire_dwxx_read";
-	public static String fire_dwxx_write = "fire_dwxx_write";
+	public final static String fire_dwxx_read = "fire_dwxx_read";
+	public final static String fire_dwxx_write = "fire_dwxx_write";
 	/**
 	 * 重点单位（灭火）
 	 */
-	public static String fire_dwxx_miehuo_read = "fire_dwxx_miehuo_read";
+	public final static String fire_dwxx_miehuo_read = "fire_dwxx_miehuo_read";
 	/**
 	 * 建筑信息
 	 */
-	public static String fire_jzxx_read = "fire_jzxx_read";
+	public final static String fire_jzxx_read = "fire_jzxx_read";
 	/**
 	 * 油气管线
 	 */
-	public static String fire_yqgx_read = "fire_yqgx_read";
+	public final static String fire_yqgx_read = "fire_yqgx_read";
 	/**
 	 * 公路隧道
 	 */
-	public static String fire_glsd_read = "fire_glsd_read";
+	public final static String fire_glsd_read = "fire_glsd_read";
 	/**
 	 * 石化信息
 	 */
-	public static String fire_shxx_read = "fire_shxx_read";
+	public final static String fire_shxx_read = "fire_shxx_read";
 	/**
 	 * 核电站
 	 */
-	public static String fire_hdz_read = "fire_hdz_read";
+	public final static String fire_hdz_read = "fire_hdz_read";
 	/**
 	 * 水电站、水库
 	 */
-	public static String fire_sdz_read = "fire_sdz_read";
+	public final static String fire_sdz_read = "fire_sdz_read";
 	/**
 	 * 联勤保障单位
 	 */
-	public static String fire_lqbzdw_read = "fire_lqbzdw_read";
+	public final static String fire_lqbzdw_read = "fire_lqbzdw_read";
 	/**
 	 * 应急联动单位
 	 */
-	public static String fire_yjlddw_read = "fire_yjlddw_read";
+	public final static String fire_yjlddw_read = "fire_yjlddw_read";
 	/**
 	 * 灭火救援专家
 	 */
-	public static String fire_mhjyzj_read = "fire_mhjyzj_read";
+	public final static String fire_mhjyzj_read = "fire_mhjyzj_read";
 	/**
 	 * 文书信息
 	 */
-	public static String fire_wsxx_read = "fire_wsxx_read";
+	public final static String fire_wsxx_read = "fire_wsxx_read";
 	/**
 	 * 人员信息
 	 */
-	public static String fire_ryxx_read = "fire_ryxx_read";
+	public final static String fire_ryxx_read = "fire_ryxx_read";
 	/**
 	 * 灾情指令信息
 	 */
-	public static String fire_zqzl_read = "fire_zqzl_read";
+	public final static String fire_zqzl_read = "fire_zqzl_read";
 
 	/**
 	 * 消防水源

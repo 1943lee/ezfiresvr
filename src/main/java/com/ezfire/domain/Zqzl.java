@@ -1,5 +1,6 @@
 package com.ezfire.domain;
 
+import com.ezfire.domain.comDomains.SZDXFJG;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,11 +13,11 @@ public class Zqzl {
 	private String zlbh;
 	@ApiModelProperty(value = "灾情编号")
 	private String zqbh;
-	@ApiModelProperty(value = "指令类型")
+	@ApiModelProperty(value = "指令类型,1.本辖区指挥指令，2.跨辖区调度指令")
 	private String zllx;
 	@ApiModelProperty(value = "信息主题")
 	private String xxzt;
-	@ApiModelProperty(value = "信息类型")
+	@ApiModelProperty(value = "信息类型,1.文本,2.语音,3.图片,4.视频,5.文档,9.其他")
 	private String xxlx;
 	@ApiModelProperty(value = "信息内容")
 	private String xxnr;
@@ -32,40 +33,6 @@ public class Zqzl {
 	private String jsry;
 	@ApiModelProperty(value = "接收机构")
 	private SZDXFJG jsjg;
-
-	@ApiModel(description = "所在地消防机构")
-	private static class SZDXFJG {
-		@ApiModelProperty(value = "消防机构编号")
-		private String xfjgbh;
-		@ApiModelProperty(value = "消防机构名称")
-		private String xfjgmc;
-		@ApiModelProperty(value = "消防机构内部编码")
-		private String xfjgnbbm;
-
-		public String getXfjgbh() {
-			return xfjgbh;
-		}
-
-		public void setXfjgbh(String xfjgbh) {
-			this.xfjgbh = xfjgbh;
-		}
-
-		public String getXfjgmc() {
-			return xfjgmc;
-		}
-
-		public void setXfjgmc(String xfjgmc) {
-			this.xfjgmc = xfjgmc;
-		}
-
-		public String getXfjgnbbm() {
-			return xfjgnbbm;
-		}
-
-		public void setXfjgnbbm(String xfjgnbbm) {
-			this.xfjgnbbm = xfjgnbbm;
-		}
-	}
 
 	public String getZlbh() {
 		return zlbh;

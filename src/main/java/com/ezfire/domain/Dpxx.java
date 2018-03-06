@@ -1,5 +1,6 @@
 package com.ezfire.domain;
 
+import com.ezfire.domain.comDomains.SZDXFJG;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -36,40 +37,6 @@ public class Dpxx {
 	private int dpqcs;
 	@ApiModelProperty(value = "调派器材数")
 	private DPQC dpqc;
-
-	@ApiModel(description = "所在地消防机构")
-	private static class SZDXFJG {
-		@ApiModelProperty(value = "消防机构编号")
-		private String xfjgbh;
-		@ApiModelProperty(value = "消防机构名称")
-		private String xfjgmc;
-		@ApiModelProperty(value = "消防机构内部编码")
-		private String xfjgnbbm;
-
-		public String getXfjgbh() {
-			return xfjgbh;
-		}
-
-		public void setXfjgbh(String xfjgbh) {
-			this.xfjgbh = xfjgbh;
-		}
-
-		public String getXfjgmc() {
-			return xfjgmc;
-		}
-
-		public void setXfjgmc(String xfjgmc) {
-			this.xfjgmc = xfjgmc;
-		}
-
-		public String getXfjgnbbm() {
-			return xfjgnbbm;
-		}
-
-		public void setXfjgnbbm(String xfjgnbbm) {
-			this.xfjgnbbm = xfjgnbbm;
-		}
-	}
 
 	@ApiModel(description = "调派专家")
 	private static class DPZJ {

@@ -1,5 +1,7 @@
 package com.ezfire.domain;
 
+import com.ezfire.domain.comDomains.IdValue;
+import com.ezfire.domain.comDomains.SZDXZQH;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -19,69 +21,13 @@ public class Xfjg {
 	@ApiModelProperty(value = "单位级别")
 	private String dwjb;
 	@ApiModelProperty(value = "单位类别")
-	private DWLB dwlb;
-	@ApiModel(description = "单位类别")
-	private static class DWLB {
-		@ApiModelProperty(value = "单位类别代码")
-		private String id;
-		@ApiModelProperty(value = "单位类别描述")
-		private String value;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-	}
+	private IdValue dwlb;
 	@ApiModelProperty(value = "单位地址")
 	private String dwdz;
 	@ApiModelProperty(value = "单位描述")
 	private String dwms;
 	@ApiModelProperty(value = "所在地行政区划")
 	private SZDXZQH szdxzqh;
-	@ApiModel(description = "所在地行政区划")
-	private static class SZDXZQH {
-		@ApiModelProperty(value = "行政区划编号")
-		private String xzqhbh;
-		@ApiModelProperty(value = "行政区划名称")
-		private String xzqhmc;
-		@ApiModelProperty(value = "行政区划内部编码")
-		private String xzqgnbbm;
-
-		public String getXzqhbh() {
-			return xzqhbh;
-		}
-
-		public void setXzqhbh(String xzqhbh) {
-			this.xzqhbh = xzqhbh;
-		}
-
-		public String getXzqhmc() {
-			return xzqhmc;
-		}
-
-		public void setXzqhmc(String xzqhmc) {
-			this.xzqhmc = xzqhmc;
-		}
-
-		public String getXzqgnbbm() {
-			return xzqgnbbm;
-		}
-
-		public void setXzqgnbbm(String xzqgnbbm) {
-			this.xzqgnbbm = xzqgnbbm;
-		}
-	}
 	@ApiModelProperty(value = "经度")
 	private double jd;
 	@ApiModelProperty(value = "纬度")
@@ -127,11 +73,11 @@ public class Xfjg {
 		this.dwjb = dwjb;
 	}
 
-	public DWLB getDwlb() {
+	public IdValue getDwlb() {
 		return dwlb;
 	}
 
-	public void setDwlb(DWLB dwlb) {
+	public void setDwlb(IdValue dwlb) {
 		this.dwlb = dwlb;
 	}
 

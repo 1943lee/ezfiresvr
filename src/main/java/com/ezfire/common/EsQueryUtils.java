@@ -5,12 +5,14 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.geo.builders.ShapeBuilders;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Created by lcy on 2018/1/24.
@@ -35,31 +38,13 @@ public class EsQueryUtils {
 	 * @return
 	 */
 	public static String queryAllById(String index, String type, String id, String idColumn) {
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(QueryBuilders.termQuery(idColumn, id));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.size(1);
-
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(index)
-				.types(type);
-		s_logger.info(searchRequest.toString());
-		try {
-			SearchResponse response = client.search(searchRequest);
-			SearchHits searchHits = response.getHits();
-			if(searchHits.getHits().length == 1) {
-				return JSON.toJSONString(searchHits.getAt(0).getSource());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return null;
+		return (String)queryCoreMethod(boolQueryBuilder, index, type, null, null,
+				0,1,null,ComDefine.elasticTimeOut,
+				EsQueryUtils::getSingleResult);
 	}
 
 	/**
@@ -70,24 +55,12 @@ public class EsQueryUtils {
 	 * @return
 	 */
 	public static String queryListByQueryBuilder(String index, String type, QueryBuilder mustQueryBuilder, int size) {
-		if(size == -1 || size > ComDefine.elasticMaxSearchSize) {
-			size = ComDefine.elasticMaxSearchSize;
-		}
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(mustQueryBuilder);
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.size(size);
-
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(index)
-				.types(type);
-		s_logger.info(searchRequest.toString());
-		return getListResults(searchRequest);
+		return (String)queryCoreMethod(boolQueryBuilder, index, type, null, null, 0, size,
+				null, ComDefine.elasticTimeOut, EsQueryUtils::getListResults);
 	}
 
 	/**
@@ -100,20 +73,16 @@ public class EsQueryUtils {
 	 * @param size
 	 * @return
 	 */
-	public static SearchHits getAroundResourceHits(String indexName, String typeName, double longitude, double latitude, double radius, int size) {
+	public static SearchHits getAroundResourceHits(String indexName, String typeName, double longitude, double latitude,
+												   double radius, int size) {
 		try {
-			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
-			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn, ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
+			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn,
+					ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
 
-			searchSourceBuilder.query(boolQueryBuilder).timeout(ComDefine.elasticTimeOut).size(size);
-
-			SearchRequest searchRequest = new SearchRequest().source(searchSourceBuilder).indices(indexName).types(typeName);
-			s_logger.info(searchRequest.toString());
-
-			SearchResponse response = client.search(searchRequest);
-			return response.getHits();
+			return (SearchHits)queryCoreMethod(boolQueryBuilder,indexName,typeName,null,null,0,size,null,ComDefine.elasticTimeOut,
+					(searchHits -> searchHits));
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -130,14 +99,108 @@ public class EsQueryUtils {
 		try {
 			SearchResponse response = client.search(searchRequest);
 			SearchHits searchHits = response.getHits();
-			List<Map<String,Object>> results = new ArrayList<>();
-			for (SearchHit searchHit : searchHits) {
-				results.add(searchHit.getSource());
-			}
-			return JSON.toJSONString(results);
+			return getListResults(searchHits);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	/**
+	 * 获取查询结果集list，并进行json序列化
+	 * @param searchHits elasticsearch 查询结果
+	 * @return
+	 */
+	public static String getSingleResult(SearchHits searchHits) {
+		if(searchHits.getTotalHits() == 1) {
+			return JSON.toJSONString(searchHits.getAt(0).getSource());
+		}
+		return null;
+	}
+
+	/**
+	 * 获取查询结果集list，并进行json序列化
+	 * @param searchHits elasticsearch 查询结果
+	 * @return
+	 */
+	public static String getListResults(SearchHits searchHits) {
+		List<Map<String,Object>> results = new ArrayList<>();
+		for (SearchHit searchHit : searchHits) {
+			results.add(searchHit.getSource());
+		}
+		return JSON.toJSONString(results);
+	}
+
+	/**
+	 *
+	 * @param queryBuilder 查询elastic 使用的query builder
+	 * @param index 索引名
+	 * @param type 类型名
+	 * @param fetchIncludes 返回字段includes，若为空，表示返回全部
+	 * @param fetchExcludes 返回字段excludes，若为空，表示不加限制
+	 * @param from from
+	 * @param size size
+	 * @param sortBuilder 排序
+	 * @param callback 查询结果回调，参数为{@link SearchHits}
+	 * @return
+	 */
+	public static String queryElasticSearch(QueryBuilder queryBuilder, String index, String type,
+										  String[] fetchIncludes, String[] fetchExcludes,
+										  int from, int size, SortBuilder sortBuilder,
+										  Function<SearchHits, Object> callback) {
+
+		return queryCoreMethod(queryBuilder, index, type,
+				fetchIncludes, fetchExcludes,
+				from, size,
+				sortBuilder, ComDefine.elasticTimeOut,
+				callback).toString();
+	}
+
+	/**
+	 * 查询elasticsearch核心方法
+	 * @param queryBuilder 查询elasticsearch使用的query builder
+	 * @param index 索引名
+	 * @param type 类型名
+	 * @param fetchIncludes 返回字段includes，数组
+	 * @param fetchExcludes 返回字段excludes，数组
+	 * @param from from
+	 * @param size size
+	 * @param sortBuilder 排序
+	 * @param timeValue 超时参数
+	 * @param callback 查询结果回调，参数为{@link SearchHits}
+	 */
+	private static Object queryCoreMethod(QueryBuilder queryBuilder, String index, String type,
+										String[] fetchIncludes, String[] fetchExcludes,
+										int from, int size, SortBuilder sortBuilder,TimeValue timeValue,
+										Function<SearchHits, Object> callback) {
+		if(queryBuilder == null) {
+			if(callback != null) {
+				callback.apply(null);
+			}
+			return null;
+		}
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+		searchSourceBuilder.fetchSource(fetchIncludes,fetchExcludes)
+				.query(queryBuilder)
+				.from(from)
+				.size(size)
+				.timeout(timeValue);
+		if(null != sortBuilder) searchSourceBuilder.sort(sortBuilder);
+
+		SearchRequest searchRequest = new SearchRequest(index).types(type).source(searchSourceBuilder);
+		s_logger.info(searchRequest.toString());
+
+		SearchHits res = null;
+		try {
+			SearchResponse response = client.search(searchRequest);
+			res = response.getHits();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if(null != callback) {
+			return callback.apply(res);
+		}
+		return null;
 	}
 }

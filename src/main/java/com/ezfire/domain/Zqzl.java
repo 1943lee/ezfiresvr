@@ -15,14 +15,14 @@ public class Zqzl {
 	private String zqbh;
 	@ApiModelProperty(value = "指令类型,1.本辖区指挥指令，2.跨辖区调度指令")
 	private String zllx;
-	@ApiModelProperty(value = "信息主题")
-	private String xxzt;
 	@ApiModelProperty(value = "信息类型,1.文本,2.语音,3.图片,4.视频,5.文档,9.其他")
 	private String xxlx;
+	@ApiModelProperty(value = "信息主题")
+	private String xxzt;
 	@ApiModelProperty(value = "信息内容")
 	private String xxnr;
 	@ApiModelProperty(value = "文件资料")
-	private String wjzl;
+	private WJZL wjzl;
 	@ApiModelProperty(value = "发送人员")
 	private String fsry;
 	@ApiModelProperty(value = "发送机构")
@@ -33,6 +33,50 @@ public class Zqzl {
 	private String jsry;
 	@ApiModelProperty(value = "接收机构")
 	private SZDXFJG jsjg;
+
+	@ApiModel(description = "文件资料")
+	private static class WJZL {
+		@ApiModelProperty(value = "文件名称")
+		private String wjmc;
+		@ApiModelProperty(value = "文件后缀(大写)")
+		private String wjhz;
+		@ApiModelProperty(value = "文件地址(url)")
+		private String wjdz;
+		@ApiModelProperty(value = "缩略图片(url)")
+		private String sltp;
+
+		public String getWjmc() {
+			return wjmc;
+		}
+
+		public void setWjmc(String wjmc) {
+			this.wjmc = wjmc;
+		}
+
+		public String getWjhz() {
+			return wjhz;
+		}
+
+		public void setWjhz(String wjhz) {
+			this.wjhz = wjhz;
+		}
+
+		public String getWjdz() {
+			return wjdz;
+		}
+
+		public void setWjdz(String wjdz) {
+			this.wjdz = wjdz;
+		}
+
+		public String getSltp() {
+			return sltp;
+		}
+
+		public void setSltp(String sltp) {
+			this.sltp = sltp;
+		}
+	}
 
 	public String getZlbh() {
 		return zlbh;
@@ -82,11 +126,11 @@ public class Zqzl {
 		this.xxnr = xxnr;
 	}
 
-	public String getWjzl() {
+	public WJZL getWjzl() {
 		return wjzl;
 	}
 
-	public void setWjzl(String wjzl) {
+	public void setWjzl(WJZL wjzl) {
 		this.wjzl = wjzl;
 	}
 

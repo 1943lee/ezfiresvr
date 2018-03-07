@@ -3,12 +3,15 @@ package com.ezfire.service.ServiceImpl;
 import com.alibaba.fastjson.JSON;
 import com.ezfire.Application;
 import com.ezfire.common.ComDefine;
+import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.dao.UserDao;
 import com.ezfire.domain.User;
+import com.ezfire.domain.UserWeChat;
 import com.ezfire.service.UserService;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,11 +43,8 @@ public class UserServiceImpl implements UserService{
 
 		QueryBuilder queryBuilder = QueryBuilders.termQuery("QYWX",qywxId);
 
-		String res = EsQueryUtils.queryListByQueryBuilder(ComDefine.fire_ryxx_read, "ryxx", queryBuilder, 1);
-
-		if(res != null && res.length() >= 2) {
-			return res.substring(1, res.length()-1);
-		}
-		return null;
+		return EsQueryUtils.queryElasticSearch(queryBuilder, ComDefine.fire_ryxx_read, "ryxx",
+				ComMethod.getBeanFields(UserWeChat.class), null, 0, 1,
+				SortBuilders.scoreSort(), EsQueryUtils::getSingleResult);
 	}
 }

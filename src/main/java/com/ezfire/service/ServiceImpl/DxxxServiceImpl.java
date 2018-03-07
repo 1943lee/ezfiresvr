@@ -65,6 +65,6 @@ public class DxxxServiceImpl implements DxxxService{
 		if(esIndex.isEmpty() || esType.isEmpty() || idColumn.isEmpty()) {
 			return null;
 		}
-		return EsQueryUtils.queryAllById(esIndex,esType,id,idColumn);
+		return EsQueryUtils.queryById(esIndex,esType,id,idColumn,null,null);
 	}
 }

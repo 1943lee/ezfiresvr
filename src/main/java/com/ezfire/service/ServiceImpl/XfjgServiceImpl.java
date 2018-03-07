@@ -1,18 +1,15 @@
 package com.ezfire.service.ServiceImpl;
 
-import com.alibaba.fastjson.JSON;
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Xfjg;
 import com.ezfire.service.XfjgService;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,7 +17,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class XfjgServiceImpl implements XfjgService {
-	private static Logger s_logger = LoggerFactory.getLogger(XfjgServiceImpl.class);
 
 	@Override
 	public String getXfjgs(String nbbm) {
@@ -28,7 +24,6 @@ public class XfjgServiceImpl implements XfjgService {
 			return null;
 		}
 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(QueryBuilders.prefixQuery("DWNBBM", nbbm));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
@@ -36,26 +31,18 @@ public class XfjgServiceImpl implements XfjgService {
 		int xzjb = nbbm.split("\\.").length;
 		boolQueryBuilder.must().add(QueryBuilders.termQuery("DWJB", xzjb - 1 + ""));
 
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.size(ComDefine.elasticMaxSearchSize)
-				.sort("DWJB", SortOrder.ASC)
-				.sort("SZDXZQH.XZQHBH", SortOrder.ASC)
-				.fetchSource(ComMethod.getBeanFields(Xfjg.class), null);
-
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_xfdw_read)
-				.types("xfdw");
-		s_logger.info(searchRequest.toString());
-
-		return EsQueryUtils.getListResults(searchRequest);
+		SortBuilder[] sortBuilders = new SortBuilder[] {
+				SortBuilders.fieldSort("DWJB").order(SortOrder.ASC),
+				SortBuilders.fieldSort("SZDXZQH.XZQHBH").order(SortOrder.ASC),
+		};
+		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_xfdw_read, "xfdw",
+				ComMethod.getBeanFields(Xfjg.class), null, 0, ComDefine.elasticMaxSearchSize,
+				sortBuilders, EsQueryUtils::getListResults);
 	}
 
 	@Override
 	public String getXfjgById(String dwbh) {
-		Xfjg xfjg = JSON.parseObject(EsQueryUtils.queryAllById(ComDefine.fire_xfdw_read,"xfdw",dwbh,"DWBH"),Xfjg.class);
-
-		return JSON.toJSONString(xfjg);
+		return EsQueryUtils.queryById(ComDefine.fire_xfdw_read, "xfdw", dwbh, "DWBH",
+				ComMethod.getBeanFields(Xfjg.class), null);
 	}
 }

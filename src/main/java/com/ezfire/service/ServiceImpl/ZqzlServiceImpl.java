@@ -6,7 +6,6 @@ import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Zqzl;
 import com.ezfire.service.ZqzlService;
-import org.elasticsearch.common.Strings;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -58,7 +57,7 @@ public class ZqzlServiceImpl implements ZqzlService {
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqzl_read, "zqzl",
-				ComMethod.getBeanFields(Zqzl.class), Strings.EMPTY_ARRAY, from, size,
+				ComMethod.getBeanFields(Zqzl.class), null, from, size,
 				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
 				EsQueryUtils::getListResults);
 	}

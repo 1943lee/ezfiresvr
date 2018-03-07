@@ -7,9 +7,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +47,7 @@ public class ESClient {
 				final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
 				credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 				s_LowClient = RestClient.builder(hosts)
-						.setHttpClientConfigCallback( new RestClientBuilder.HttpClientConfigCallback() {
-							@Override
-							public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
-								return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
-							}
-						})
+						.setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
 						.build();
 				s_HighClient = new RestHighLevelClient(s_LowClient);
 				s_logger.info("Elasticsearch连接成功");

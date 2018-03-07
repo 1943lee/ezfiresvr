@@ -1,22 +1,21 @@
 package com.ezfire.service.ServiceImpl;
 
 import com.alibaba.fastjson.JSON;
-import com.ezfire.common.*;
+import com.ezfire.common.ComConvert;
+import com.ezfire.common.ComDefine;
+import com.ezfire.common.ComMethod;
+import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.AroundResource;
 import com.ezfire.domain.RestfulParams.AlarmCondition;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.ZqxxService;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import java.util.*;
  */
 @Service
 public class ZqxxServiceImpl implements ZqxxService {
-	private static Logger s_logger = LoggerFactory.getLogger(ZqxxServiceImpl.class);
 
 	@Override
 	public String getZqxxByZQBH(String zqbh) {
@@ -36,7 +34,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 			return  null;
 		}
 
-		return EsQueryUtils.queryAllById(ComDefine.fire_zqxx_read,"zqxx",zqbh,"ZQBH");
+		return EsQueryUtils.queryById(ComDefine.fire_zqxx_read,"zqxx",zqbh,"ZQBH",
+				ComMethod.getBeanFields(Zqxx.class),null);
 	}
 
 	@Override
@@ -54,7 +53,6 @@ public class ZqxxServiceImpl implements ZqxxService {
 		boolean onlyStressed = ComConvert.toBoolean(condition.get("onlyStressed"), false);
 		int userOrgLevel = ComConvert.toInteger(condition.get("userOrgLevel"), -1);
 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		if(!nbbm.isEmpty()) {
 			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", nbbm));
@@ -66,31 +64,19 @@ public class ZqxxServiceImpl implements ZqxxService {
 			boolQueryBuilder.must().add(QueryBuilders.termQuery("TCZQ.LEVEL_" + userOrgLevel, "1"));
 		}
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.from(from)
-				.size(size)
-				.fetchSource(ComMethod.getBeanFields(Zqxx.class),null)
-				.sort("LASJ", SortOrder.DESC);
-
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_zqxx_read)
-				.types("zqxx");
-		s_logger.info(searchRequest.toString());
-
-		return EsQueryUtils.getListResults(searchRequest);
+		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
+				ComMethod.getBeanFields(Zqxx.class), null, from, size,
+				SortBuilders.fieldSort("LASJ").order(SortOrder.DESC), EsQueryUtils::getListResults);
 	}
 
 	@Override
 	public String getNearestZqxx(double longitude, double latitude, double radius, int dateRange) {
 		// 检查坐标是否合法
-		if(!ComMethod.isValidPoint(longitude, latitude)) {
+		if (!ComMethod.isValidPoint(longitude, latitude)) {
 			return null;
 		}
 
 		try {
-			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 			// 周边条件
@@ -99,53 +85,46 @@ public class ZqxxServiceImpl implements ZqxxService {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String nowDate = sdf.format(new Date());
 			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.MINUTE, - dateRange);
+			calendar.add(Calendar.MINUTE, -dateRange);
 			String rangeStart = sdf.format(calendar.getTime());
 			boolQueryBuilder.must().add(QueryBuilders.rangeQuery("LASJ").gte(rangeStart).lte(nowDate));
 
-			searchSourceBuilder.query(boolQueryBuilder)
-					.timeout(ComDefine.elasticTimeOut)
-					.size(ComDefine.elasticMaxSearchSize)
-					.fetchSource(ComMethod.getBeanFields(Zqxx.class),null);
+			return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
+					ComMethod.getBeanFields(Zqxx.class), null, 0, ComDefine.elasticMaxSearchSize,
+					SortBuilders.scoreSort(), (searchHits) -> {
+						List<AroundResource> aroundResultList = new ArrayList<>();
+						for (SearchHit searchHit : searchHits) {
+							AroundResource aroundResult = new AroundResource();
+							Map<String, Object> source = searchHit.getSource();
+							double jd = source.containsKey("JD") ? ComConvert.toDouble(source.get("JD"), 0.0) : 0.0;
+							double wd = source.containsKey("WD") ? ComConvert.toDouble(source.get("WD"), 0.0) : 0.0;
+							double distance = ComMethod.getSphericalDistance(longitude, latitude, jd, wd);
+							// 二次校验
+							if (distance > radius) {
+								continue;
+							}
+							aroundResult.setContent(JSON.toJSONString(source));
+							aroundResult.setDistance(distance);
 
-			SearchRequest searchRequest = new SearchRequest().source(searchSourceBuilder).indices(ComDefine.fire_zqxx_read).types("zqxx");
-			s_logger.info(searchRequest.toString());
+							aroundResultList.add(aroundResult);
+						}
 
-			List<AroundResource> aroundResultList = new ArrayList<>();
-			RestHighLevelClient client = ESClient.getHightClient();
-			SearchResponse response = client.search(searchRequest);
-			for (SearchHit searchHit : response.getHits()) {
-				AroundResource aroundResult = new AroundResource();
-				Map<String,Object> source = searchHit.getSource();
-				double jd = source.containsKey("JD") ? ComConvert.toDouble(source.get("JD"), 0.0) : 0.0;
-				double wd = source.containsKey("WD") ? ComConvert.toDouble(source.get("WD"), 0.0) : 0.0;
-				double distance = ComMethod.getSphericalDistance(longitude,latitude,jd,wd);
-				// 二次校验
-				if(distance > radius) {
-					continue;
-				}
-				aroundResult.setContent(JSON.toJSONString(source));
-				aroundResult.setDistance(distance);
+						if (aroundResultList.size() == 0) {
+							return "";
+						}
 
-				aroundResultList.add(aroundResult);
-			}
+						// 排序，取最近的灾情信息
+						aroundResultList.sort(Comparator.comparingDouble(AroundResource::getDistance));
 
-			if(aroundResultList.size() == 0) {
-				return "";
-			}
-
-			// 排序，取最近的灾情信息
-			aroundResultList.sort(Comparator.comparingDouble(AroundResource::getDistance));
-
-			return aroundResultList.get(0).getContent();
-		}
-		catch (IOException e) {
+						return aroundResultList.get(0).getContent();
+					});
+		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	@Override
+		@Override
 	public String getZqxxSearch(AlarmCondition conditions) {
 		//1. 灾情编号，可能为数组
 		List<String> zqbhs = new ArrayList<>();
@@ -167,30 +146,16 @@ public class ZqxxServiceImpl implements ZqxxService {
 			boolQueryBuilder.must().add(QueryBuilders.termsQuery("ZQBH", zqbhs));
 		}
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.size(ComDefine.elasticMaxSearchSize)
-				.sort("LASJ", SortOrder.DESC);
-		if(null != includes && includes.length > 0) {
-			searchSourceBuilder.fetchSource(includes,null);
-		}
 
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_zqxx_read)
-				.types("zqxx");
-		s_logger.info(searchRequest.toString());
-
-		try {
-			SearchResponse searchResponse = ESClient.getHightClient().search(searchRequest);
-			Map<String,Object> result = new HashMap<>();
-			for(SearchHit searchHit : searchResponse.getHits()) {
-				result.put(searchHit.getId(),searchHit.getSource());
-			}
-			return JSON.toJSONString(result);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
+				includes, null, 0, ComDefine.elasticMaxSearchSize,
+				SortBuilders.fieldSort("LASJ").order(SortOrder.DESC),
+				(searchHits) -> {
+					Map<String,Object> result = new HashMap<>();
+					for(SearchHit searchHit : searchHits) {
+						result.put(searchHit.getId(),searchHit.getSource());
+					}
+					return JSON.toJSONString(result);
+				});
 	}
 }

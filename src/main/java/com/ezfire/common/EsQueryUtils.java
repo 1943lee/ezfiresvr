@@ -37,12 +37,13 @@ public class EsQueryUtils {
 	 * @param idColumn
 	 * @return
 	 */
-	public static String queryAllById(String index, String type, String id, String idColumn) {
+	public static String queryById(String index, String type, String id, String idColumn,
+								   String[] fetchIncludes, String[] fetchExcludes) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(QueryBuilders.termQuery(idColumn, id));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
-		return (String)queryCoreMethod(boolQueryBuilder, index, type, null, null,
+		return (String)queryCoreMethod(boolQueryBuilder, index, type, fetchIncludes, fetchExcludes,
 				0,1,null,ComDefine.elasticTimeOut,
 				EsQueryUtils::getSingleResult);
 	}
@@ -54,12 +55,13 @@ public class EsQueryUtils {
 	 * @param mustQueryBuilder
 	 * @return
 	 */
-	public static String queryListByQueryBuilder(String index, String type, QueryBuilder mustQueryBuilder, int size) {
+	public static String queryListByQueryBuilder(String index, String type, QueryBuilder mustQueryBuilder,
+												 int from, int size) {
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(mustQueryBuilder);
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
-		return (String)queryCoreMethod(boolQueryBuilder, index, type, null, null, 0, size,
+		return (String)queryCoreMethod(boolQueryBuilder, index, type, null, null, from, size,
 				null, ComDefine.elasticTimeOut, EsQueryUtils::getListResults);
 	}
 
@@ -92,27 +94,11 @@ public class EsQueryUtils {
 
 	/**
 	 * 获取查询结果集list，并进行json序列化
-	 * @param searchRequest
-	 * @return
-	 */
-	public static String getListResults(SearchRequest searchRequest) {
-		try {
-			SearchResponse response = client.search(searchRequest);
-			SearchHits searchHits = response.getHits();
-			return getListResults(searchHits);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * 获取查询结果集list，并进行json序列化
 	 * @param searchHits elasticsearch 查询结果
 	 * @return
 	 */
 	public static String getSingleResult(SearchHits searchHits) {
-		if(searchHits.getTotalHits() == 1) {
+		if(searchHits.getTotalHits() >= 1) {
 			return JSON.toJSONString(searchHits.getAt(0).getSource());
 		}
 		return null;
@@ -149,11 +135,36 @@ public class EsQueryUtils {
 										  int from, int size, SortBuilder sortBuilder,
 										  Function<SearchHits, Object> callback) {
 
-		return queryCoreMethod(queryBuilder, index, type,
+		return (String) queryCoreMethod(queryBuilder, index, type,
 				fetchIncludes, fetchExcludes,
 				from, size,
-				sortBuilder, ComDefine.elasticTimeOut,
-				callback).toString();
+				null == sortBuilder ? null : new SortBuilder[] { sortBuilder }, ComDefine.elasticTimeOut,
+				callback);
+	}
+
+	/**
+	 *
+	 * @param queryBuilder 查询elastic 使用的query builder
+	 * @param index 索引名
+	 * @param type 类型名
+	 * @param fetchIncludes 返回字段includes，若为空，表示返回全部
+	 * @param fetchExcludes 返回字段excludes，若为空，表示不加限制
+	 * @param from from
+	 * @param size size
+	 * @param sortBuilders 排序
+	 * @param callback 查询结果回调，参数为{@link SearchHits}
+	 * @return
+	 */
+	public static String queryElasticSearch(QueryBuilder queryBuilder, String index, String type,
+											String[] fetchIncludes, String[] fetchExcludes,
+											int from, int size, SortBuilder[] sortBuilders,
+											Function<SearchHits, Object> callback) {
+
+		return (String) queryCoreMethod(queryBuilder, index, type,
+				fetchIncludes, fetchExcludes,
+				from, size,
+				sortBuilders, ComDefine.elasticTimeOut,
+				callback);
 	}
 
 	/**
@@ -165,13 +176,13 @@ public class EsQueryUtils {
 	 * @param fetchExcludes 返回字段excludes，数组
 	 * @param from from
 	 * @param size size
-	 * @param sortBuilder 排序
+	 * @param sortBuilders 排序
 	 * @param timeValue 超时参数
 	 * @param callback 查询结果回调，参数为{@link SearchHits}
 	 */
 	private static Object queryCoreMethod(QueryBuilder queryBuilder, String index, String type,
 										String[] fetchIncludes, String[] fetchExcludes,
-										int from, int size, SortBuilder sortBuilder,TimeValue timeValue,
+										int from, int size, SortBuilder[] sortBuilders,TimeValue timeValue,
 										Function<SearchHits, Object> callback) {
 		if(queryBuilder == null) {
 			if(callback != null) {
@@ -185,7 +196,11 @@ public class EsQueryUtils {
 				.from(from)
 				.size(size)
 				.timeout(timeValue);
-		if(null != sortBuilder) searchSourceBuilder.sort(sortBuilder);
+		if(null != sortBuilders) {
+			for(SortBuilder sortBuilder : sortBuilders) {
+				searchSourceBuilder.sort(sortBuilder);
+			}
+		}
 
 		SearchRequest searchRequest = new SearchRequest(index).types(type).source(searchSourceBuilder);
 		s_logger.info(searchRequest.toString());

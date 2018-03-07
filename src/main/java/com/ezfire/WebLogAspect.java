@@ -11,6 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -37,7 +38,7 @@ public class WebLogAspect {
 		// 记录下请求内容
 		s_logger.info("请求地址 : " + request.getRequestURL().toString());
 		s_logger.info("HTTP METHOD : " + request.getMethod());
-		s_logger.info("IP : " + request.getRemoteAddr());
+		s_logger.info("IP : " + getIpAddress(request));
 		s_logger.info("CLASS_METHOD : " + joinPoint.getSignature().getDeclaringTypeName() + "."
 				+ joinPoint.getSignature().getName());
 		s_logger.info("参数 : " + Arrays.toString(joinPoint.getArgs()));
@@ -59,5 +60,46 @@ public class WebLogAspect {
 		Object ob = pjp.proceed();// ob 为方法的返回值
 		s_logger.info("耗时 : " + (System.currentTimeMillis() - startTime) + "ms");
 		return ob;
+	}
+
+	/**
+	 * 获取请求主机IP地址,如果通过代理进来，则透过防火墙获取真实IP地址;
+	 *
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
+	private static String getIpAddress(HttpServletRequest request) throws IOException {
+		// 获取请求主机IP地址,如果通过代理进来，则透过防火墙获取真实IP地址
+
+		String ip = request.getHeader("X-Forwarded-For");
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("Proxy-Client-IP");
+			}
+			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("WL-Proxy-Client-IP");
+			}
+			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("HTTP_CLIENT_IP");
+			}
+			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+			}
+			if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getRemoteAddr();
+			}
+		} else if (ip.length() > 15) {
+			String[] ips = ip.split(",");
+			for (int index = 0; index < ips.length; index++) {
+				String strIp = ips[index];
+				if (!("unknown".equalsIgnoreCase(strIp))) {
+					ip = strIp;
+					break;
+				}
+			}
+		}
+		return ip;
 	}
 }

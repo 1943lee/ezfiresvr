@@ -6,14 +6,11 @@ import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Wsxx;
 import com.ezfire.service.WsxxService;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -24,7 +21,6 @@ import java.util.Map;
  */
 @Service
 public class WsxxServiceImpl implements WsxxService {
-	private static Logger s_logger = LoggerFactory.getLogger(WsxxServiceImpl.class);
 
 	@Override
 	public String getWsxxByConditions(Map<String,Object> conditidons) {
@@ -33,7 +29,6 @@ public class WsxxServiceImpl implements WsxxService {
 		int from = ComConvert.toInteger(conditidons.get("from"), 0);
 		int size = ComConvert.toInteger(conditidons.get("size"), 50);
 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//1.zqbh
@@ -61,19 +56,8 @@ public class WsxxServiceImpl implements WsxxService {
 
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 
-		searchSourceBuilder.query(boolQueryBuilder)
-				.timeout(ComDefine.elasticTimeOut)
-				.from(from)
-				.size(size)
-				.sort("GXSJ", SortOrder.DESC)
-				.fetchSource(ComMethod.getBeanFields(Wsxx.class), null);
-
-		SearchRequest searchRequest = new SearchRequest()
-				.source(searchSourceBuilder)
-				.indices(ComDefine.fire_wsxx_read)
-				.types("wsxx");
-		s_logger.info(searchRequest.toString());
-
-		return EsQueryUtils.getListResults(searchRequest);
+		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_wsxx_read, "wsxx",
+				ComMethod.getBeanFields(Wsxx.class), null, from, size,
+				SortBuilders.fieldSort("GXSJ").order(SortOrder.DESC), EsQueryUtils::getListResults);
 	}
 }

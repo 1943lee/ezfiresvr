@@ -51,6 +51,8 @@ public class UserWeChat {
 	private SZDXFJG szdxfjg;
 	@ApiModelProperty(value = "所在地行政区划")
 	private SZDXZQH szdxzqh;
+	@ApiModelProperty(value = "在位情况")
+	private IdValue zwqk;
 
 	public String getRybh() {
 		return rybh;
@@ -218,5 +220,13 @@ public class UserWeChat {
 
 	public void setSzdxzqh(SZDXZQH szdxzqh) {
 		this.szdxzqh = szdxzqh;
+	}
+
+	public IdValue getZwqk() {
+		return zwqk;
+	}
+
+	public void setZwqk(IdValue zwqk) {
+		this.zwqk = zwqk;
 	}
 }

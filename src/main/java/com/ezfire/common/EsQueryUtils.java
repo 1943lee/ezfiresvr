@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -117,6 +118,15 @@ public class EsQueryUtils {
 		return JSON.toJSONString(results);
 	}
 
+	public static String getMapResults(SearchHits searchHits, Function<Map<String, Object>, String> function) {
+		Map<String, Map<String, Object>> results = new HashMap();
+		for(SearchHit searchHit : searchHits) {
+			Map<String, Object> source = searchHit.getSource();
+			results.put(function.apply(source), source);
+		}
+		return JSON.toJSONString(results);
+	}
+
 	/**
 	 *
 	 * @param queryBuilder 查询elastic 使用的query builder
@@ -131,9 +141,9 @@ public class EsQueryUtils {
 	 * @return
 	 */
 	public static String queryElasticSearch(QueryBuilder queryBuilder, String index, String type,
-										  String[] fetchIncludes, String[] fetchExcludes,
-										  int from, int size, SortBuilder sortBuilder,
-										  Function<SearchHits, Object> callback) {
+												  String[] fetchIncludes, String[] fetchExcludes,
+												  int from, int size, SortBuilder sortBuilder,
+												  Function<SearchHits, Object> callback) {
 
 		return (String) queryCoreMethod(queryBuilder, index, type,
 				fetchIncludes, fetchExcludes,

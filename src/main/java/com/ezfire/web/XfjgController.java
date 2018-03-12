@@ -43,4 +43,17 @@ public class XfjgController {
 			return new ResponseEntity<>(result, HttpStatus.OK);
 		}
 	}
+
+	@RequestMapping(value = "/ids",method = RequestMethod.GET,produces = "application/json")
+	@ApiOperation(value = "根据dwbh获取对应消防机构信息,参数为数组",notes = "根据主键id查询，参数为数组，返回值为key-value",response = Xfjg.class)
+	@ApiImplicitParam(name = "dwbhs",value = "单位编号数组",paramType = "query",dataType = "String",required = true)
+	public ResponseEntity<String> getXfjgByDwbhs(@RequestParam String[] dwbhs) {
+		String result = xfjgService.getXfjgByIds(dwbhs);
+		if(null == result) {
+			return new ResponseEntity<>("{\"message\":\"未找到对应消防机构\"}", HttpStatus.NOT_FOUND);
+		}
+		else {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+	}
 }

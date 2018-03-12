@@ -49,8 +49,8 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/weChats",produces = "application/json",method = RequestMethod.GET)
-	@ApiOperation(value = "批量获取微信用户信息",
-			notes = "接收userId为数组形式，返回值为key-value形式,key的格式为为orgId:userId",response = UserWeChat.class)
+	@ApiOperation(value = "批量获取指定企业id的微信用户信息",
+			notes = "接收userId为数组形式，返回值为key-value形式,key的格式为为userId",response = UserWeChat.class)
 	@ApiImplicitParams({@ApiImplicitParam(name = "orgId",value = "企业微信id",dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "userIds",value = "用户ids",dataType = "String",paramType = "query")})
 	public ResponseEntity<String> getUserWeChats(@RequestParam String orgId,

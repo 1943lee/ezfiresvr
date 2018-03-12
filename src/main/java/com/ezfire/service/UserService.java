@@ -9,4 +9,8 @@ public interface UserService {
 	String getUserByDlm(String dlm);
 
 	String getUserFromWeChatOrg(String orgId, String userId);
+
+	String getUserFromWeChatOrgIds(String orgId, String[] userIds);
+
+	String getUserByIds(String[] userIds);
 }

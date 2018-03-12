@@ -7,4 +7,6 @@ public interface XfjgService {
 	String getXfjgs(String nbbm);
 
 	String getXfjgById(String dwbh);
+
+	String getXfjgByIds(String[] dwbhs);
 }

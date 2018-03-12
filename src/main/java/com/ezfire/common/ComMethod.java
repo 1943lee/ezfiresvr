@@ -112,6 +112,23 @@ public class ComMethod {
 	}
 
 	/**
+	 * 字符串转码，处理中文输入
+	 * @param str
+	 * @return
+	 */
+	public static String[] encodeStrs(String[] str) {
+		String[] res = new String[str.length];
+		for(int i = 0; i < str.length; i++) {
+			try {
+				res[i] = new String(str[i].getBytes("ISO-8859-1"), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		return res;
+	}
+
+	/**
 	 * 判断输入字符串是否为指定时间格式
 	 * @param str
 	 * @param format

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Created by lcy on 2018/3/9.
@@ -47,9 +48,11 @@ public class VehicleController {
 	}
 
 	@RequestMapping(value = "/status",method = RequestMethod.GET,produces = "application/json")
-	@ApiImplicitParam(name = "key", value = "key，车辆编号或者车牌号码,为数组，逗号隔开", required = true, paramType = "query", dataType = "String")
+	@ApiImplicitParam(name = "key", value = "key，车辆编号或者车牌号码,为数组，逗号隔开", required = true,
+			paramType = "query", dataType = "String")
 	@ApiOperation(value = "批量根据车辆编号或车牌号码获取车辆状态",
 			notes = "返回值为list，内部为key-value结构，key为车辆编号")
+	@ApiIgnore
 	public ResponseEntity<String> getBasicVehicleStatus(@RequestParam(value = "key") String[] keys) {
 		String result = vehicleService.getVehicleStatus(keys);
 		return new ResponseEntity<>(result, HttpStatus.OK);

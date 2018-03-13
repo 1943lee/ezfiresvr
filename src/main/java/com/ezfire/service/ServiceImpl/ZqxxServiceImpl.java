@@ -13,7 +13,6 @@ import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
@@ -58,11 +57,14 @@ public class ZqxxServiceImpl implements ZqxxService {
 			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", nbbm));
 		}
 		if(caseNotClosed) {
-			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", new String[] {"10","11","12"}));
+			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", "10","11","12"));
 		}
 		if(onlyStressed && userOrgLevel != -1) {
 			boolQueryBuilder.must().add(QueryBuilders.termQuery("TCZQ.LEVEL_" + userOrgLevel, "1"));
 		}
+		// 默认只查询真警
+		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBS", "1"));
+		// 过滤无效记录
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
 				ComMethod.getBeanFields(Zqxx.class), null, from, size,
@@ -79,6 +81,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 		try {
 			BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+			// 默认只查询真警
+			boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBS", "1"));
 			// 周边条件
 			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn, ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
 			// 时间条件
@@ -124,7 +128,7 @@ public class ZqxxServiceImpl implements ZqxxService {
 		}
 	}
 
-		@Override
+	@Override
 	public String getZqxxSearch(AlarmCondition conditions) {
 		//1. 灾情编号，可能为数组
 		List<String> zqbhs = new ArrayList<>();
@@ -140,7 +144,6 @@ public class ZqxxServiceImpl implements ZqxxService {
 		//3.includes
 		String[] includes = conditions.getIncludes();
 
-		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		if(!zqbhs.isEmpty()) {
 			boolQueryBuilder.must().add(QueryBuilders.termsQuery("ZQBH", zqbhs));

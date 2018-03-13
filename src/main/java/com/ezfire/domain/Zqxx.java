@@ -43,7 +43,7 @@ public class Zqxx {
 	private ZQWZ zqwz;
 	@ApiModelProperty(value = "灾情概述")
 	private String zqgs;
-	@ApiModelProperty(value = "灾情标识")
+	@ApiModelProperty(value = "灾情标识, 0为假警, 1为真警")
 	private String zqbs;
 	@ApiModelProperty(value = "燃烧楼层")
 	private String rslc;

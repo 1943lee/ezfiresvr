@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ezfire.common.ComConvert;
 import com.ezfire.common.ComDefine;
-import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
-import com.ezfire.domain.UserWeChat;
 import com.ezfire.service.VehicleService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -65,7 +63,7 @@ public class VehicleServiceImpl implements VehicleService {
 
 		final String colNameLambda = colName;
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_clxx_read, "clxx",
-				ComMethod.getBeanFields(UserWeChat.class), null, 0, keys.length,
+				null, null, 0, keys.length,
 				SortBuilders.scoreSort(),
 				(searchHits -> EsQueryUtils.getMapResults(searchHits,
 						(map) -> ComConvert.toString(map.get(colNameLambda)))));

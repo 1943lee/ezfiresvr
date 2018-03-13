@@ -118,6 +118,12 @@ public class EsQueryUtils {
 		return JSON.toJSONString(results);
 	}
 
+	/**
+	 * 通用获取查询结果集Map，并进行json序列化
+	 * @param searchHits
+	 * @param function
+	 * @return
+	 */
 	public static String getMapResults(SearchHits searchHits, Function<Map<String, Object>, String> function) {
 		Map<String, Map<String, Object>> results = new HashMap();
 		for(SearchHit searchHit : searchHits) {

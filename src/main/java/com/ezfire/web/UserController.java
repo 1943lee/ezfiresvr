@@ -36,10 +36,12 @@ public class UserController {
 	@RequestMapping(value = "/weChat",produces = "application/json",method = RequestMethod.GET)
 	@ApiOperation(value = "获取微信用户信息",response = UserWeChat.class)
 	@ApiImplicitParams({@ApiImplicitParam(name = "orgId",value = "企业微信id",dataType = "String",paramType = "query"),
-			@ApiImplicitParam(name = "userId",value = "用户id",dataType = "String",paramType = "query")})
+			@ApiImplicitParam(name = "userId",value = "用户id",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	public ResponseEntity<String> getUserWeChat(@RequestParam String orgId,
-											   @RequestParam String userId) {
-		String result = userService.getUserFromWeChatOrg(orgId, userId);
+												@RequestParam String userId,
+												@RequestParam(required = false) String[] includes) {
+		String result = userService.getUserFromWeChatOrg(orgId, userId, includes);
 		if(null == result) {
 			return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 		}
@@ -52,10 +54,12 @@ public class UserController {
 	@ApiOperation(value = "批量获取指定企业id的微信用户信息",
 			notes = "接收userId为数组形式，返回值为key-value形式,key的格式为为userId",response = UserWeChat.class)
 	@ApiImplicitParams({@ApiImplicitParam(name = "orgId",value = "企业微信id",dataType = "String",paramType = "query"),
-			@ApiImplicitParam(name = "userIds",value = "用户ids",dataType = "String",paramType = "query")})
+			@ApiImplicitParam(name = "userIds",value = "用户ids",dataType = "String",paramType = "query"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	public ResponseEntity<String> getUserWeChats(@RequestParam String orgId,
-												@RequestParam String[] userIds) {
-		String result = userService.getUserFromWeChatOrgIds(orgId, userIds);
+												 @RequestParam String[] userIds,
+												 @RequestParam(required = false) String[] includes) {
+		String result = userService.getUserFromWeChatOrgIds(orgId, userIds, includes);
 		if(null == result) {
 			return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 		}
@@ -66,9 +70,11 @@ public class UserController {
 
 	@RequestMapping(value = "/ids",produces = "application/json",method = RequestMethod.GET)
 	@ApiOperation(value = "根据用户编号获取用户信息，支持数组",response = UserWeChat.class)
-	@ApiImplicitParam(name = "userIds",value = "用户ids",dataType = "String[]",paramType = "query")
-	public ResponseEntity<String> getUserByIds(@RequestParam String[] userIds) {
-		String result = userService.getUserByIds(userIds);
+	@ApiImplicitParams({@ApiImplicitParam(name = "userIds",value = "用户ids",dataType = "String[]",paramType = "query"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
+	public ResponseEntity<String> getUserByIds(@RequestParam String[] userIds,
+											   @RequestParam(required = false) String[] includes) {
+		String result = userService.getUserByIds(userIds, includes);
 		if(null == result) {
 			return new ResponseEntity<>("", HttpStatus.NOT_FOUND);
 		}

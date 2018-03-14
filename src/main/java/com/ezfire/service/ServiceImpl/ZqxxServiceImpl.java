@@ -28,13 +28,13 @@ import java.util.*;
 public class ZqxxServiceImpl implements ZqxxService {
 
 	@Override
-	public String getZqxxByZQBH(String zqbh) {
+	public String getZqxxByZQBH(String zqbh, String[] includes) {
 		if(null == zqbh || zqbh.isEmpty()) {
 			return  null;
 		}
 
 		return EsQueryUtils.queryById(ComDefine.fire_zqxx_read,"zqxx",zqbh,"ZQBH",
-				ComMethod.getBeanFields(Zqxx.class),null);
+				EsQueryUtils.getFetchInlcudes(includes, Zqxx.class),null);
 	}
 
 	@Override
@@ -66,13 +66,17 @@ public class ZqxxServiceImpl implements ZqxxService {
 		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBS", "1"));
 		// 过滤无效记录
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+
+		// 获取返回字段
+		String[] includes = condition.containsKey("includes") ? (String[]) condition.get("includes") : null;
+
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
-				ComMethod.getBeanFields(Zqxx.class), null, from, size,
+				EsQueryUtils.getFetchInlcudes(includes, Zqxx.class), null, from, size,
 				SortBuilders.fieldSort("LASJ").order(SortOrder.DESC), EsQueryUtils::getListResults);
 	}
 
 	@Override
-	public String getNearestZqxx(double longitude, double latitude, double radius, int dateRange) {
+	public String getNearestZqxx(double longitude, double latitude, double radius, int dateRange, String[] includes) {
 		// 检查坐标是否合法
 		if (!ComMethod.isValidPoint(longitude, latitude)) {
 			return null;
@@ -93,8 +97,16 @@ public class ZqxxServiceImpl implements ZqxxService {
 			String rangeStart = sdf.format(calendar.getTime());
 			boolQueryBuilder.must().add(QueryBuilders.rangeQuery("LASJ").gte(rangeStart).lte(nowDate));
 
+			// 返回字段处理，由于要计算距离并排序，需默认加上经纬度
+			List<String> includeList = Arrays.asList(EsQueryUtils.getFetchInlcudes(includes, Zqxx.class));
+			List<String> tmp = new ArrayList<>(includeList);
+			if(!tmp.containsAll(Arrays.asList("JD","WD"))) {
+				tmp.addAll(Arrays.asList("JD","WD"));
+			}
+			includes = tmp.stream().toArray(String[] :: new);
+
 			return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
-					ComMethod.getBeanFields(Zqxx.class), null, 0, ComDefine.elasticMaxSearchSize,
+					includes, null, 0, ComDefine.elasticMaxSearchSize,
 					SortBuilders.scoreSort(), (searchHits) -> {
 						List<AroundResource> aroundResultList = new ArrayList<>();
 						for (SearchHit searchHit : searchHits) {

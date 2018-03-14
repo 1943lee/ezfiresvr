@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class VehicleServiceImpl implements VehicleService {
 	StringRedisTemplate stringRedisTemplate;
 
 	@Override
-	public String getVehicleBasic(String key, int type) {
+	public String getVehicleBasic(String key, int type, String[] includes) {
 		String colName = "";
 		if(type == 0) {
 			colName = "CLBH";
@@ -39,11 +40,12 @@ public class VehicleServiceImpl implements VehicleService {
 			return null;
 		}
 
-		return EsQueryUtils.queryById(ComDefine.fire_clxx_read, "clxx", key, colName, null, null);
+		return EsQueryUtils.queryById(ComDefine.fire_clxx_read, "clxx", key, colName,
+				EsQueryUtils.getFetchInlcudes(includes, null), null);
 	}
 
 	@Override
-	public String getVehicleBasics(String[] keys, int type) {
+	public String getVehicleBasics(String[] keys, int type, String[] includes) {
 		String colName = "";
 		if(type == 0) {
 			colName = "CLBH";
@@ -61,9 +63,20 @@ public class VehicleServiceImpl implements VehicleService {
 		boolQueryBuilder.must().add(QueryBuilders.termsQuery(colName, keys));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
+		// 返回字段处理，由于批量查询，需要得到单位编号作为key
+		includes = EsQueryUtils.getFetchInlcudes(includes, null);
+		if(includes != null) {
+			List<String> includeList = Arrays.asList(includes);
+			List<String> tmp = new ArrayList<>(includeList);
+			if (!tmp.contains(colName)) {
+				tmp.add(colName);
+			}
+			includes = tmp.stream().toArray(String[]::new);
+		}
+
 		final String colNameLambda = colName;
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_clxx_read, "clxx",
-				null, null, 0, keys.length,
+				EsQueryUtils.getFetchInlcudes(includes, null), null, 0, keys.length,
 				SortBuilders.scoreSort(),
 				(searchHits -> EsQueryUtils.getMapResults(searchHits,
 						(map) -> ComConvert.toString(map.get(colNameLambda)))));

@@ -72,12 +72,13 @@ public class VehicleServiceImpl implements VehicleService {
 	@Override
 	public String getVehicleStatus(String[] keys) {
 		List<String> outRedis = stringRedisTemplate.opsForValue()
-				.multiGet(Arrays.stream(keys).
-						map(key-> ComDefine.redisVehicleStatusPrefix + key)
+				.multiGet(Arrays.stream(keys)
+						.map(key-> ComDefine.redisVehicleStatusPrefix + key)
 						.collect(Collectors.toList()));
 		JSONObject res = new JSONObject();
 		for(int i = 0; i < keys.length; i++) {
-			res.put(keys[i], JSON.parseObject(outRedis.get(i)));
+			if(null == outRedis.get(i)) continue;
+			res.put(keys[i], JSON.parseObject(outRedis.get(i).replace("^", " ")));
 		}
 
 		return res.toJSONString();

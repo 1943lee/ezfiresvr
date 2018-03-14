@@ -26,23 +26,27 @@ public class VehicleController {
 
 	@RequestMapping(value = "/info",method = RequestMethod.GET,produces = "application/json")
 	@ApiImplicitParams({@ApiImplicitParam(name = "key", value = "key，车辆编号或者车牌号码", required = true, paramType = "query", dataType = "String"),
-			@ApiImplicitParam(name = "type", value = "类型，0为车辆编号，1为车牌号码，默认0", defaultValue = "0", paramType = "query", dataType = "int")})
+			@ApiImplicitParam(name = "type", value = "类型，0为车辆编号，1为车牌号码，默认0", defaultValue = "0", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	@ApiOperation(value = "根据车辆编号或车牌号码获取车辆基本信息",
 			notes = "类型参数不传入时，默认为0，即按车辆编号查询")
 	public ResponseEntity<String> getBasicVehicleInfo(@RequestParam(value = "key") String key,
-													  @RequestParam(defaultValue = "0") int type) {
-		String result = vehicleService.getVehicleBasic(ComMethod.encodeStr(key), type);
+													  @RequestParam(defaultValue = "0") int type,
+													  @RequestParam(required = false) String[] includes) {
+		String result = vehicleService.getVehicleBasic(ComMethod.encodeStr(key), type, includes);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/infos",method = RequestMethod.GET,produces = "application/json")
 	@ApiImplicitParams({@ApiImplicitParam(name = "key", value = "key，车辆编号或者车牌号码,为数组，逗号隔开", required = true, paramType = "query", dataType = "String"),
-			@ApiImplicitParam(name = "type", value = "类型，0为车辆编号，1为车牌号码，默认0", defaultValue = "0", paramType = "query", dataType = "int")})
+			@ApiImplicitParam(name = "type", value = "类型，0为车辆编号，1为车牌号码，默认0", defaultValue = "0", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	@ApiOperation(value = "批量根据车辆编号或车牌号码获取车辆基本信息",
 			notes = "类型参数不传入时，默认为0，即按车辆编号查询")
 	public ResponseEntity<String> getBasicVehicleInfos(@RequestParam(value = "key") String[] keys,
-													  @RequestParam(defaultValue = "0") int type) {
-		String result = vehicleService.getVehicleBasics(ComMethod.encodeStrs(keys), type);
+													  @RequestParam(defaultValue = "0") int type,
+													   @RequestParam(required = false) String[] includes) {
+		String result = vehicleService.getVehicleBasics(ComMethod.encodeStrs(keys), type, includes);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 

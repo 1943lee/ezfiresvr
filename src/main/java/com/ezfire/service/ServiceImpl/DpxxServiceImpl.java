@@ -1,7 +1,6 @@
 package com.ezfire.service.ServiceImpl;
 
 import com.ezfire.common.ComDefine;
-import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.Dpxx;
 import com.ezfire.domain.Zqxx;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class DpxxServiceImpl implements DpxxService{
 
-	public String getDpxxByZQBH(String zqbh) {
+	public String getDpxxByZQBH(String zqbh, String[] includes) {
 		if(null == zqbh || zqbh.isEmpty()) {
 			return  null;
 		}
@@ -28,12 +27,12 @@ public class DpxxServiceImpl implements DpxxService{
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_dpxx_read, "dpxx",
-				ComMethod.getBeanFields(Dpxx.class), null, 0, ComDefine.elasticMaxSearchSize,
+				EsQueryUtils.getFetchInlcudes(includes, Dpxx.class), null, 0, ComDefine.elasticMaxSearchSize,
 				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC), EsQueryUtils::getListResults);
 	}
 
 	@Override
-	public String getDpxxZqbhByClbhOrCphm(String key, int type) {
+	public String getDpxxZqbhByClbhOrCphm(String key, int type, String[] includes) {
 		String colName = "";
 		if(type == 0) {
 			colName = "DPCL.CLBH";
@@ -62,7 +61,7 @@ public class DpxxServiceImpl implements DpxxService{
 
 		if(zqbh != null) {
 			return EsQueryUtils.queryById(ComDefine.fire_zqxx_read, "zqxx", zqbh, "ZQBH",
-					ComMethod.getBeanFields(Zqxx.class), null);
+					EsQueryUtils.getFetchInlcudes(includes, Zqxx.class), null);
 		} else {
 			return null;
 		}

@@ -22,22 +22,22 @@ import java.util.Map;
 @Service
 public class ZqzlServiceImpl implements ZqzlService {
 	@Override
-	public String getZqxxByConditions(Map<String, Object> conditidons) {
-		if(conditidons == null) return "";
+	public String getZqxxByConditions(Map<String, Object> conditions) {
+		if(conditions == null) return "";
 
-		int from = ComConvert.toInteger(conditidons.get("from"), 0);
-		int size = ComConvert.toInteger(conditidons.get("size"), 50);
+		int from = ComConvert.toInteger(conditions.get("from"), 0);
+		int size = ComConvert.toInteger(conditions.get("size"), 50);
 
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//1.zqbh
-		String zqbh = conditidons.containsKey("zqbh") ? conditidons.get("zqbh").toString() : "";
+		String zqbh = conditions.containsKey("zqbh") ? conditions.get("zqbh").toString() : "";
 		if(!zqbh.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH",zqbh));
 		//2.时间范围，时间以更新时间FSSJ为准
-		String kssj = conditidons.containsKey("kssj") ?
-				(ComMethod.isValidDate(conditidons.get("kssj").toString(),dateFormat) ? conditidons.get("kssj").toString() : "") : "";
-		String jssj = conditidons.containsKey("jssj") ?
-				(ComMethod.isValidDate(conditidons.get("jssj").toString(),dateFormat) ? conditidons.get("jssj").toString() : "") : "";
+		String kssj = conditions.containsKey("kssj") ?
+				(ComMethod.isValidDate(conditions.get("kssj").toString(),dateFormat) ? conditions.get("kssj").toString() : "") : "";
+		String jssj = conditions.containsKey("jssj") ?
+				(ComMethod.isValidDate(conditions.get("jssj").toString(),dateFormat) ? conditions.get("jssj").toString() : "") : "";
 		if(!kssj.isEmpty() || !jssj.isEmpty()) {
 			RangeQueryBuilder rangeQueryBuilder = new RangeQueryBuilder("FSSJ");
 			if(!kssj.isEmpty()) rangeQueryBuilder.gte(kssj);
@@ -47,17 +47,20 @@ public class ZqzlServiceImpl implements ZqzlService {
 		}
 
 		//3.信息类型
-		String xxlx = conditidons.containsKey("xxlx") ? conditidons.get("xxlx").toString() : "";
+		String xxlx = conditions.containsKey("xxlx") ? conditions.get("xxlx").toString() : "";
 		if(!xxlx.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("XXLX",xxlx));
 
 		//4.指令类型
-		String zllx = conditidons.containsKey("zllx") ? conditidons.get("zllx").toString() : "";
+		String zllx = conditions.containsKey("zllx") ? conditions.get("zllx").toString() : "";
 		if(!zllx.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("ZLLX",zllx));
 
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 
+		//5.返回字段
+		String[] includes = conditions.containsKey("includes") ? (String[]) conditions.get("includes") : null;
+
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqzl_read, "zqzl",
-				ComMethod.getBeanFields(Zqzl.class), null, from, size,
+				EsQueryUtils.getFetchInlcudes(includes, Zqzl.class), null, from, size,
 				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
 				EsQueryUtils::getListResults);
 	}

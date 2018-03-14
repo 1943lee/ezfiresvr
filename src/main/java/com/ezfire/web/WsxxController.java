@@ -36,7 +36,8 @@ public class WsxxController {
 			@ApiImplicitParam(name = "nbbm",value = "反馈机构内部编码，用于查询指定机构及下属机构发送的文书信息",dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "jgbh",value = "反馈机构编号，用于查询指定机构发送的文书信息",dataType = "String",paramType = "query"),
 			@ApiImplicitParam(name = "from", value = "from,默认0", defaultValue = "0", paramType = "query", dataType = "int"),
-			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int")
+			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")
 			})
 	public ResponseEntity<String> getWsxxByZqbh(@RequestParam String zqbh,
 												@RequestParam(required = false) String kssj,
@@ -44,7 +45,8 @@ public class WsxxController {
 												@RequestParam(required = false) String nbbm,
 												@RequestParam(required = false) String jgbh,
 												@RequestParam(defaultValue = "0") int from,
-												@RequestParam(defaultValue = "50") int size) {
+												@RequestParam(defaultValue = "50") int size,
+												@RequestParam(required = false) String[] includes) {
 		String res = "";
 		if(null == zqbh || zqbh.trim().isEmpty()) {
 			return new ResponseEntity<>(res, HttpStatus.OK);
@@ -60,6 +62,7 @@ public class WsxxController {
 		if(jgbh != null && !jgbh.isEmpty()) params.put("jgbh",jgbh);
 		params.put("from", from);
 		params.put("size", size);
+		params.put("includes", includes);
 
 		res = wsxxService.getWsxxByConditions(params);
 		return new ResponseEntity<>(res, HttpStatus.OK);

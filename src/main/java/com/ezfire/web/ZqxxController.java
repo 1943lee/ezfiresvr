@@ -26,8 +26,10 @@ public class ZqxxController {
 
 	@ApiOperation(value = "根据灾情编号获取灾情基本信息")
 	@RequestMapping(value = "/{zqbh}",method = RequestMethod.GET,produces = "application/json")
-	public ResponseEntity<String> getZqxxById(@PathVariable String zqbh) {
-		String zqxx = zqxxService.getZqxxByZQBH(zqbh);
+	@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")
+	public ResponseEntity<String> getZqxxById(@PathVariable String zqbh,
+											  @RequestParam(required = false) String[] includes) {
+		String zqxx = zqxxService.getZqxxByZQBH(zqbh, includes);
 		if(null != zqxx && !zqxx.isEmpty()) {
 			return new ResponseEntity<>(zqxx, HttpStatus.OK);
 		}
@@ -43,13 +45,15 @@ public class ZqxxController {
 			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean"),
 			@ApiImplicitParam(name = "onlyStressed", value = "onlyStressed,为true时表示只查突出灾情，默认为false,表示查询全部", defaultValue = "false", paramType = "query", dataType = "boolean"),
-			@ApiImplicitParam(name = "userOrgLevel", value = "userOrgLevel,用户所在单位级别，部局为0依次递增,用于查询突出灾情，根据用户不同级别进行查询", paramType = "query", dataType = "int")})
+			@ApiImplicitParam(name = "userOrgLevel", value = "userOrgLevel,用户所在单位级别，部局为0依次递增,用于查询突出灾情，根据用户不同级别进行查询", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	public ResponseEntity<String> getZqxxByCondition(@RequestParam(defaultValue = "") String xfjgnbbm,
 													 @RequestParam(defaultValue = "0") int from,
 													 @RequestParam(defaultValue = "50") int size,
 													 @RequestParam(defaultValue = "true") boolean notClosed,
 													 @RequestParam(defaultValue = "false") boolean onlyStressed,
-													 @RequestParam(defaultValue = "-1") int userOrgLevel) {
+													 @RequestParam(defaultValue = "-1") int userOrgLevel,
+													 @RequestParam(required = false) String[] includes) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
 		condition.put("from", from);
@@ -57,6 +61,7 @@ public class ZqxxController {
 		condition.put("notClosed", notClosed);
 		condition.put("onlyStressed", onlyStressed);
 		condition.put("userOrgLevel", userOrgLevel);
+		condition.put("includes", includes);
 
 		String zqxx = zqxxService.getZqxxByCondition(condition);
 		if(null != zqxx && !zqxx.isEmpty()) {
@@ -72,12 +77,14 @@ public class ZqxxController {
 	@ApiImplicitParams({@ApiImplicitParam(name = "longitude", value = "经度", paramType = "query", dataType = "double"),
 			@ApiImplicitParam(name = "latitude", value = "纬度", paramType = "query", dataType = "double"),
 			@ApiImplicitParam(name = "radius", value = "半径，米为单位", paramType = "query", dataType = "double"),
-			@ApiImplicitParam(name = "dateRange", value = "时间范围，分钟为单位", paramType = "query", dataType = "int")})
+			@ApiImplicitParam(name = "dateRange", value = "时间范围，分钟为单位", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	public ResponseEntity<String> getNearestZqxx(@RequestParam double longitude,
 												 @RequestParam double latitude,
 												 @RequestParam double radius,
-												 @RequestParam int dateRange) {
-		String zqxx = zqxxService.getNearestZqxx(longitude, latitude, radius, dateRange);
+												 @RequestParam int dateRange,
+												 @RequestParam(required = false) String[] includes) {
+		String zqxx = zqxxService.getNearestZqxx(longitude, latitude, radius, dateRange, includes);
 		if(null != zqxx) {
 			return new ResponseEntity<>(zqxx, HttpStatus.OK);
 		}

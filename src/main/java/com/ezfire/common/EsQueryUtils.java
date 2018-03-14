@@ -31,6 +31,20 @@ public class EsQueryUtils {
 	private static RestHighLevelClient client = ESClient.getHightClient();
 
 	/**
+	 * 根据指定includes或class，返回includes
+	 * @param includes 传入includes，可能为空
+	 * @param className 类型
+	 * @return
+	 */
+	public static String[] getFetchInlcudes(String[] includes, Class className) {
+		if(null == includes || includes.length == 0) {
+			return ComMethod.getBeanFields(className);
+		} else {
+			return  includes;
+		}
+	}
+
+	/**
 	 * 根据id查找唯一文档信息
 	 * @param index
 	 * @param type

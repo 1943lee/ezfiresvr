@@ -27,6 +27,7 @@ public class ComMethod {
 	 * @return 属性名数组
 	 */
 	public static String[] getBeanFields(Class originClass) {
+		if(null == originClass) return null;
 		Field[] fields = originClass.getDeclaredFields();
 		String[] results = new String[fields.length];
 		int i = 0;

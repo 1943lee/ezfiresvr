@@ -23,22 +23,22 @@ import java.util.Map;
 public class WsxxServiceImpl implements WsxxService {
 
 	@Override
-	public String getWsxxByConditions(Map<String,Object> conditidons) {
-		if(conditidons == null) return "";
+	public String getWsxxByConditions(Map<String,Object> conditions) {
+		if(conditions == null) return "";
 
-		int from = ComConvert.toInteger(conditidons.get("from"), 0);
-		int size = ComConvert.toInteger(conditidons.get("size"), 50);
+		int from = ComConvert.toInteger(conditions.get("from"), 0);
+		int size = ComConvert.toInteger(conditions.get("size"), 50);
 
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//1.zqbh
-		String zqbh = conditidons.containsKey("zqbh") ? conditidons.get("zqbh").toString() : "";
+		String zqbh = conditions.containsKey("zqbh") ? conditions.get("zqbh").toString() : "";
 		if(!zqbh.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH",zqbh));
 		//2.时间范围，时间以更新时间GXSJ为准
-		String kssj = conditidons.containsKey("kssj") ?
-				(ComMethod.isValidDate(conditidons.get("kssj").toString(),dateFormat) ? conditidons.get("kssj").toString() : "") : "";
-		String jssj = conditidons.containsKey("jssj") ?
-				(ComMethod.isValidDate(conditidons.get("jssj").toString(),dateFormat) ? conditidons.get("jssj").toString() : "") : "";
+		String kssj = conditions.containsKey("kssj") ?
+				(ComMethod.isValidDate(conditions.get("kssj").toString(),dateFormat) ? conditions.get("kssj").toString() : "") : "";
+		String jssj = conditions.containsKey("jssj") ?
+				(ComMethod.isValidDate(conditions.get("jssj").toString(),dateFormat) ? conditions.get("jssj").toString() : "") : "";
 		if(!kssj.isEmpty() || !jssj.isEmpty()) {
 			RangeQueryBuilder rangeQueryBuilder = new RangeQueryBuilder("GXSJ");
 			if(!kssj.isEmpty()) rangeQueryBuilder.gte(kssj);
@@ -48,16 +48,19 @@ public class WsxxServiceImpl implements WsxxService {
 		}
 
 		//3.反馈机构内部编码，指定查看某个单位及以下的文书信息
-		String fkjgnbbm = conditidons.containsKey("nbbm") ? conditidons.get("nbbm").toString() : "";
+		String fkjgnbbm = conditions.containsKey("nbbm") ? conditions.get("nbbm").toString() : "";
 		if(!fkjgnbbm.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.prefixQuery("FKJG.XFJGNBBM",fkjgnbbm));
 		//4.反馈机构编号，指定查看某个单位的文书信息
-		String fkjgjgbh = conditidons.containsKey("jgbh") ? conditidons.get("jgbh").toString() : "";
+		String fkjgjgbh = conditions.containsKey("jgbh") ? conditions.get("jgbh").toString() : "";
 		if(!fkjgjgbh.isEmpty()) boolQueryBuilder.must().add(QueryBuilders.termQuery("FKJG.XFJGBH",fkjgnbbm));
 
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT","0"));
 
+		//5.返回字段
+		String[] includes = conditions.containsKey("includes") ? (String[]) conditions.get("includes") : null;
+
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_wsxx_read, "wsxx",
-				ComMethod.getBeanFields(Wsxx.class), null, from, size,
+				EsQueryUtils.getFetchInlcudes(includes, Wsxx.class), null, from, size,
 				SortBuilders.fieldSort("GXSJ").order(SortOrder.DESC), EsQueryUtils::getListResults);
 	}
 }

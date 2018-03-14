@@ -20,9 +20,11 @@ public class XfjgController {
 
 	@RequestMapping(value = "/nextLevel/{nbbm:.+}", method = RequestMethod.GET, produces = "application/json")
 	@ApiOperation(value = "根据机构内部编码查询其下级机构", notes = "只包含下一级机构", response = Xfjg.class, responseContainer = "List")
-	@ApiImplicitParam(name = "nbbm", value = "内部编码", paramType = "path", dataType = "String", required = true)
-	public ResponseEntity<String> getXfjgUnderByInternelCode(@PathVariable String nbbm) {
-		String result = xfjgService.getXfjgs(nbbm);
+	@ApiImplicitParams({@ApiImplicitParam(name = "nbbm", value = "内部编码", paramType = "path", dataType = "String", required = true),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
+	public ResponseEntity<String> getXfjgUnderByInternelCode(@PathVariable String nbbm,
+															 @RequestParam(required = false) String[] includes) {
+		String result = xfjgService.getXfjgs(nbbm, includes);
 		if(null == result) {
 			return new ResponseEntity<>("{\"message\":\"未找到对应的下级机构\"}", HttpStatus.NOT_FOUND);
 		}
@@ -33,9 +35,11 @@ public class XfjgController {
 
 	@RequestMapping(value = "/{dwbh}",method = RequestMethod.GET,produces = "application/json")
 	@ApiOperation(value = "根据dwbh获取对应消防机构信息",notes = "根据主键id查询",response = Xfjg.class)
-	@ApiImplicitParam(name = "dwbh",value = "单位编号",paramType = "path",dataType = "String",required = true)
-	public ResponseEntity<String> getXfjgByDwbh(@PathVariable String dwbh) {
-		String result = xfjgService.getXfjgById(dwbh);
+	@ApiImplicitParams({@ApiImplicitParam(name = "dwbh",value = "单位编号",paramType = "path",dataType = "String",required = true),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
+	public ResponseEntity<String> getXfjgByDwbh(@PathVariable String dwbh,
+												@RequestParam(required = false) String[] includes) {
+		String result = xfjgService.getXfjgById(dwbh, includes);
 		if(null == result) {
 			return new ResponseEntity<>("{\"message\":\"未找到对应消防机构\"}", HttpStatus.NOT_FOUND);
 		}
@@ -46,9 +50,11 @@ public class XfjgController {
 
 	@RequestMapping(value = "/ids",method = RequestMethod.GET,produces = "application/json")
 	@ApiOperation(value = "批量根据dwbh获取对应消防机构信息,参数为数组",notes = "根据主键id查询，参数为数组，返回值为key-value",response = Xfjg.class)
-	@ApiImplicitParam(name = "dwbhs",value = "单位编号数组",paramType = "query",dataType = "String",required = true)
-	public ResponseEntity<String> getXfjgByDwbhs(@RequestParam String[] dwbhs) {
-		String result = xfjgService.getXfjgByIds(dwbhs);
+	@ApiImplicitParams({@ApiImplicitParam(name = "dwbhs",value = "单位编号数组",paramType = "query",dataType = "String",required = true),
+			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
+	public ResponseEntity<String> getXfjgByDwbhs(@RequestParam String[] dwbhs,
+												 @RequestParam(required = false) String[] includes) {
+		String result = xfjgService.getXfjgByIds(dwbhs, includes);
 		if(null == result) {
 			return new ResponseEntity<>("{\"message\":\"未找到对应消防机构\"}", HttpStatus.NOT_FOUND);
 		}

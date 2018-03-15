@@ -1,4 +1,4 @@
-package com.ezfire.service.ServiceImpl;
+package com.ezfire.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.ezfire.common.ComConvert;
@@ -6,7 +6,7 @@ import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.AroundResource;
-import com.ezfire.domain.RestfulParams.AlarmCondition;
+import com.ezfire.domain.restfulParams.AlarmCondition;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.ZqxxService;
 import org.elasticsearch.common.geo.builders.ShapeBuilders;

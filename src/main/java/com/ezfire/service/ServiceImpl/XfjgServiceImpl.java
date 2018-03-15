@@ -1,4 +1,4 @@
-package com.ezfire.service.ServiceImpl;
+package com.ezfire.service.serviceImpl;
 
 import com.ezfire.common.ComConvert;
 import com.ezfire.common.ComDefine;

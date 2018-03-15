@@ -1,6 +1,6 @@
 package com.ezfire.service;
 
-import com.ezfire.domain.RestfulParams.AlarmCondition;
+import com.ezfire.domain.restfulParams.AlarmCondition;
 
 import java.util.Map;
 

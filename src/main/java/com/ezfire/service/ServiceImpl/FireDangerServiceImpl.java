@@ -1,4 +1,4 @@
-package com.ezfire.service.ServiceImpl;
+package com.ezfire.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.ezfire.Application;

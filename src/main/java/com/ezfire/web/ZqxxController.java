@@ -1,6 +1,6 @@
 package com.ezfire.web;
 
-import com.ezfire.domain.RestfulParams.AlarmCondition;
+import com.ezfire.domain.restfulParams.AlarmCondition;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.ZqxxService;
 import io.swagger.annotations.Api;

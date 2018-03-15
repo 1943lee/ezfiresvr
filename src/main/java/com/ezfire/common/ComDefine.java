@@ -126,6 +126,10 @@ public class ComDefine {
 	 * 车辆信息
 	 */
 	public final static String fire_clxx_read = "fire_clxx_read";
+	/**
+	 * 灾情录音信息
+	 */
+	public final static String fire_zqly_read = "fire_zqly_read";
 
 	/**
 	 * 消防水源

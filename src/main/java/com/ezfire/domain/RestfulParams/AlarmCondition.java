@@ -1,4 +1,4 @@
-package com.ezfire.domain.RestfulParams;
+package com.ezfire.domain.restfulParams;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

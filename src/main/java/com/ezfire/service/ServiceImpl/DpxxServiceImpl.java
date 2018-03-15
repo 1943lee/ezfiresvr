@@ -1,4 +1,4 @@
-package com.ezfire.service.ServiceImpl;
+package com.ezfire.service.serviceImpl;
 
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.EsQueryUtils;

@@ -1,6 +1,7 @@
 package com.ezfire.domain;
 
 import com.ezfire.domain.comDomains.IdValue;
+import com.ezfire.domain.comDomains.IdValueChain;
 import com.ezfire.domain.comDomains.SZDXFJG;
 import com.ezfire.domain.comDomains.SZDXZQH;
 import io.swagger.annotations.ApiModel;
@@ -33,6 +34,8 @@ public class Zqxx {
 	private String bjsj;
 	@ApiModelProperty(value = "突出灾情")
 	private TCZQ tczq;
+	@ApiModelProperty(value = "灾情类型")
+	private IdValueChain zqlx;
 	@ApiModelProperty(value = "灾情等级")
 	private ZQDJ zqdj;
 	@ApiModelProperty(value = "灾情状态")
@@ -47,14 +50,40 @@ public class Zqxx {
 	private String zqbs;
 	@ApiModelProperty(value = "燃烧楼层")
 	private String rslc;
+	@ApiModelProperty(value = "报警人员")
+	private String bjry;
+	@ApiModelProperty(value = "报警电话")
+	private String bjdh;
+	@ApiModelProperty(value = "报警方式")
+	private String bjfs;
 	@ApiModelProperty(value = "结案时间")
 	private String jasj;
+	@ApiModelProperty(value = "接受命令时间")
+	private String jsmlsj;
+	@ApiModelProperty(value = "出动警力时间")
+	private String cdjlsj;
+	@ApiModelProperty(value = "到达现场时间")
+	private String ddxcsj;
+	@ApiModelProperty(value = "战斗展开时间")
+	private String zdzksj;
+	@ApiModelProperty(value = "到场出水时间")
+	private String dccssj;
+	@ApiModelProperty(value = "火势控制时间")
+	private String hskzsj;
+	@ApiModelProperty(value = "基本扑灭时间")
+	private String jbpmsj;
+	@ApiModelProperty(value = "警力归队时间")
+	private String jlgdsj;
 	@ApiModelProperty(value = "现场指挥人员")
 	private XCZHRY xczhry;
 	@ApiModelProperty(value = "所在地消防机构")
 	private SZDXFJG szdxfjg;
 	@ApiModelProperty(value = "所在地行政区划")
 	private SZDXZQH szdxzqh;
+	@ApiModelProperty(value = "跨区域消防机构,单个值或数组形式")
+	private SZDXFJG kqyxfjg;
+	@ApiModelProperty(value = "跨区域行政区划,单个值或数组形式")
+	private SZDXZQH kqyxzqh;
 
 	@ApiModel(description = "突出灾情")
 	private static class TCZQ {
@@ -430,5 +459,117 @@ public class Zqxx {
 
 	public void setSzdxzqh(SZDXZQH szdxzqh) {
 		this.szdxzqh = szdxzqh;
+	}
+
+	public SZDXFJG getKqyxfjg() {
+		return kqyxfjg;
+	}
+
+	public void setKqyxfjg(SZDXFJG kqyxfjg) {
+		this.kqyxfjg = kqyxfjg;
+	}
+
+	public SZDXZQH getKqyxzqh() {
+		return kqyxzqh;
+	}
+
+	public void setKqyxzqh(SZDXZQH kqyxzqh) {
+		this.kqyxzqh = kqyxzqh;
+	}
+
+	public IdValueChain getZqlx() {
+		return zqlx;
+	}
+
+	public void setZqlx(IdValueChain zqlx) {
+		this.zqlx = zqlx;
+	}
+
+	public String getBjry() {
+		return bjry;
+	}
+
+	public void setBjry(String bjry) {
+		this.bjry = bjry;
+	}
+
+	public String getBjdh() {
+		return bjdh;
+	}
+
+	public void setBjdh(String bjdh) {
+		this.bjdh = bjdh;
+	}
+
+	public String getBjfs() {
+		return bjfs;
+	}
+
+	public void setBjfs(String bjfs) {
+		this.bjfs = bjfs;
+	}
+
+	public String getJsmlsj() {
+		return jsmlsj;
+	}
+
+	public void setJsmlsj(String jsmlsj) {
+		this.jsmlsj = jsmlsj;
+	}
+
+	public String getCdjlsj() {
+		return cdjlsj;
+	}
+
+	public void setCdjlsj(String cdjlsj) {
+		this.cdjlsj = cdjlsj;
+	}
+
+	public String getDdxcsj() {
+		return ddxcsj;
+	}
+
+	public void setDdxcsj(String ddxcsj) {
+		this.ddxcsj = ddxcsj;
+	}
+
+	public String getZdzksj() {
+		return zdzksj;
+	}
+
+	public void setZdzksj(String zdzksj) {
+		this.zdzksj = zdzksj;
+	}
+
+	public String getDccssj() {
+		return dccssj;
+	}
+
+	public void setDccssj(String dccssj) {
+		this.dccssj = dccssj;
+	}
+
+	public String getHskzsj() {
+		return hskzsj;
+	}
+
+	public void setHskzsj(String hskzsj) {
+		this.hskzsj = hskzsj;
+	}
+
+	public String getJbpmsj() {
+		return jbpmsj;
+	}
+
+	public void setJbpmsj(String jbpmsj) {
+		this.jbpmsj = jbpmsj;
+	}
+
+	public String getJlgdsj() {
+		return jlgdsj;
+	}
+
+	public void setJlgdsj(String jlgdsj) {
+		this.jlgdsj = jlgdsj;
 	}
 }

@@ -43,7 +43,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 			return  null;
 		}
 
-		String nbbm = ComConvert.toString(condition.get("xfjgnbbm"));
+		String xfjgnbbm = ComConvert.toString(condition.get("xfjgnbbm"));
+		String xfjgflag = ComConvert.toString(condition.get("xfjgflag"));
 		int from = ComConvert.toInteger(condition.get("from"), 0);
 		int size = ComConvert.toInteger(condition.get("size"), 50);
 		// 是否只查询已结案的灾情
@@ -53,8 +54,17 @@ public class ZqxxServiceImpl implements ZqxxService {
 		int userOrgLevel = ComConvert.toInteger(condition.get("userOrgLevel"), -1);
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-		if(!nbbm.isEmpty()) {
-			boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", nbbm));
+		if(!xfjgnbbm.isEmpty()) {
+			if(xfjgflag.equals("0")) {
+				boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", xfjgnbbm));
+			} else if(xfjgflag.equals("1")) {
+				boolQueryBuilder.must().add(QueryBuilders.prefixQuery("KQYXFJG.XFJGNBBM", xfjgnbbm));
+			} else if(xfjgflag.equals("2")) {
+				BoolQueryBuilder subQueryBuilder = QueryBuilders.boolQuery();
+				subQueryBuilder.should().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", xfjgnbbm));
+				subQueryBuilder.should().add(QueryBuilders.prefixQuery("KQYXFJG.XFJGNBBM", xfjgnbbm));
+				boolQueryBuilder.must().add(subQueryBuilder);
+			}
 		}
 		if(caseNotClosed) {
 			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", "10","11","12"));
@@ -87,6 +97,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
 			// 默认只查询真警
 			boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBS", "1"));
+			// 默认只查询未结案的警情
+			boolQueryBuilder.mustNot().add(QueryBuilders.termsQuery("ZQZT.ID", "10","11","12"));
 			// 周边条件
 			boolQueryBuilder.must().add(QueryBuilders.geoShapeQuery(ComDefine.esGeoShapeColumn, ShapeBuilders.newCircleBuilder().center(longitude, latitude).radius(String.valueOf(radius) + "m")));
 			// 时间条件

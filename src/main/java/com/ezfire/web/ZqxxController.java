@@ -40,14 +40,17 @@ public class ZqxxController {
 
 	@RequestMapping(value = "/search",method = RequestMethod.GET,produces = "application/json")
 	@ApiOperation(value = "查询灾情信息", notes = "按照灾情立案时间降序排列", response = Zqxx.class, responseContainer = "List")
-	@ApiImplicitParams({@ApiImplicitParam(name = "xfjgnbbm", value = "内部编码,默认为空", paramType = "query", dataType = "String"),
+	@ApiImplicitParams({@ApiImplicitParam(name = "xfjgnbbm", value = "内部编码,默认为空", paramType = "query",required = true,dataType = "String"),
+			@ApiImplicitParam(name = "xfjgflag", value = "消防机构查询标识，'0'表示根据消防机构内部编码查询，" +
+					"'1'表示查询跨区域，'2'表示两者都查，默认为0", defaultValue = "0", paramType = "query", dataType = "String"),
 			@ApiImplicitParam(name = "from", value = "from,默认0", defaultValue = "0", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name = "size", value = "size,默认50", defaultValue = "50", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean"),
 			@ApiImplicitParam(name = "onlyStressed", value = "onlyStressed,为true时表示只查突出灾情，默认为false,表示查询全部", defaultValue = "false", paramType = "query", dataType = "boolean"),
 			@ApiImplicitParam(name = "userOrgLevel", value = "userOrgLevel,用户所在单位级别，部局为0依次递增,用于查询突出灾情，根据用户不同级别进行查询", paramType = "query", dataType = "int"),
 			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
-	public ResponseEntity<String> getZqxxByCondition(@RequestParam(defaultValue = "") String xfjgnbbm,
+	public ResponseEntity<String> getZqxxByCondition(@RequestParam String xfjgnbbm,
+													 @RequestParam(defaultValue = "0") String xfjgflag,
 													 @RequestParam(defaultValue = "0") int from,
 													 @RequestParam(defaultValue = "50") int size,
 													 @RequestParam(defaultValue = "true") boolean notClosed,
@@ -56,6 +59,7 @@ public class ZqxxController {
 													 @RequestParam(required = false) String[] includes) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
+		condition.put("xfjgflag", xfjgflag);
 		condition.put("from", from);
 		condition.put("size", size);
 		condition.put("notClosed", notClosed);

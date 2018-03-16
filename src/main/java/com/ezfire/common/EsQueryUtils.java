@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -128,6 +129,24 @@ public class EsQueryUtils {
 		List<Map<String,Object>> results = new ArrayList<>();
 		for (SearchHit searchHit : searchHits) {
 			results.add(searchHit.getSource());
+		}
+		return JSON.toJSONString(results);
+	}
+
+	/**
+	 * 获取查询结果集list，并进行json序列化，支持处理单条记录
+	 * @param searchHits elasticsearch 查询结果
+	 * @param consumer 用于处理SearchHit中的字段
+	 * @return
+	 */
+	public static String getListResults(SearchHits searchHits, Consumer<Map<String, Object>> consumer) {
+		List<Map<String,Object>> results = new ArrayList<>();
+		for (SearchHit searchHit : searchHits) {
+			Map<String,Object> searchMap = searchHit.getSource();
+			if(null != consumer) {
+				consumer.accept(searchMap);
+			}
+			results.add(searchMap);
 		}
 		return JSON.toJSONString(results);
 	}

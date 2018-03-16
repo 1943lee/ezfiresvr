@@ -12,6 +12,8 @@ public class SZDXFJG {
 	private String xfjgbh;
 	@ApiModelProperty(value = "消防机构名称")
 	private String xfjgmc;
+	@ApiModelProperty(value = "消防机构简称")
+	private String xfjgjc;
 	@ApiModelProperty(value = "消防机构内部编码")
 	private String xfjgnbbm;
 
@@ -29,6 +31,14 @@ public class SZDXFJG {
 
 	public void setXfjgmc(String xfjgmc) {
 		this.xfjgmc = xfjgmc;
+	}
+
+	public String getXfjgjc() {
+		return xfjgjc;
+	}
+
+	public void setXfjgjc(String xfjgjc) {
+		this.xfjgjc = xfjgjc;
 	}
 
 	public String getXfjgnbbm() {

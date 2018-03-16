@@ -174,4 +174,27 @@ public class ComDefine {
 			return list;
 		}
 	}
+
+	/**
+	 * 缓存字典项key
+	 */
+	public enum CacheNameDefine {
+		fire_dictionary_vehicle_type("10003","装备类型字典项编号");
+
+		private String value;
+		private String description;
+
+		CacheNameDefine(String value,String description) {
+			this.value = value;
+			this.description = description;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+	}
 }

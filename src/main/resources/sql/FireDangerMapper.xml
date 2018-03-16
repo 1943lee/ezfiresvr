@@ -29,12 +29,6 @@
         <include refid="PageSQLFoot" />
     </select>
 
-    <select id="getDictionary" resultType="com.ezfire.domain.Dictionary">
-        SELECT * FROM B_QJ_ZDX
-          WHERE ZDLX = '10006'
-          ORDER BY ZDJB
-    </select>
-
     <select id="getDetail" resultType="com.ezfire.domain.FireDanger" parameterType="String">
         SELECT * FROM a_fire_dandg
         WHERE bh = #{bh, jdbcType=VARCHAR}

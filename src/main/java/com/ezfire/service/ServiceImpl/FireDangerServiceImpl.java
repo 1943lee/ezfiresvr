@@ -2,6 +2,8 @@ package com.ezfire.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
 import com.ezfire.Application;
+import com.ezfire.common.ComCache;
+import com.ezfire.common.ComDefine;
 import com.ezfire.dao.FireDangerDao;
 import com.ezfire.domain.FireDangerSimple;
 import com.ezfire.service.FireDangerService;
@@ -41,7 +43,7 @@ public class FireDangerServiceImpl implements FireDangerService {
 
 	@Override
 	public String getDictionary() {
-		return JSON.toJSONString(fireDangerDao.getDictionary());
+		return JSON.toJSONString(ComCache.getInstance().getDictionaryByType(ComDefine.CacheNameDefine.fire_dictionary_fireDanger_type));
 	}
 
 	@Override

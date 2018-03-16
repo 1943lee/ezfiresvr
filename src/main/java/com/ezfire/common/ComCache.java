@@ -7,8 +7,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by lcy on 2018/3/16.
@@ -31,14 +34,21 @@ public class ComCache implements CommandLineRunner{
 		}
 		DictionaryDao dictionaryDao = Application.myContext.getBean("dictionaryDao", DictionaryDao.class);
 		// 装备类型字典项
-		List<Dictionary> vehicleType = dictionaryDao
-				.getDictionary(ComDefine.CacheNameDefine.fire_dictionary_vehicle_type.getValue());
+		List<String> typeCodeList = Arrays.asList(ComDefine.CacheNameDefine.fire_dictionary_vehicle_type.getValue(),
+				ComDefine.CacheNameDefine.fire_dictionary_fireDanger_type.getValue());
+		List<Dictionary> dictionaryList = dictionaryDao.getDictionary(typeCodeList);
 
-		HashMap<String, Dictionary> vehicleTypeMap = new HashMap<>();
-		for (Dictionary dictionary : vehicleType) {
-			vehicleTypeMap.put(dictionary.getZdbh(), dictionary);
-		}
+		HashMap<String, Dictionary> vehicleTypeMap = (HashMap<String, Dictionary>)dictionaryList.stream()
+				.filter(dictionary ->
+						dictionary.getZdlx().equals(ComDefine.CacheNameDefine.fire_dictionary_vehicle_type.getValue()))
+				.collect(Collectors.toMap(Dictionary::getZdbh, Function.identity()));
+		HashMap<String, Dictionary> fireDangerTypeMap = (HashMap<String, Dictionary>) dictionaryList.stream()
+				.filter(dictionary ->
+						dictionary.getZdlx().equals(ComDefine.CacheNameDefine.fire_dictionary_fireDanger_type.getValue()))
+				.collect(Collectors.toMap(Dictionary::getZdbh, Function.identity()));
+
 		mComCache.put(ComDefine.CacheNameDefine.fire_dictionary_vehicle_type.getValue(), vehicleTypeMap);
+		mComCache.put(ComDefine.CacheNameDefine.fire_dictionary_fireDanger_type.getValue(), fireDangerTypeMap);
 	}
 
 	/**

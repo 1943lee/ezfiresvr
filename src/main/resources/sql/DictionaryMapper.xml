@@ -2,9 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ezfire.dao.DictionaryDao">
-    <select id="getDictionary" resultType="com.ezfire.domain.Dictionary" parameterType="String">
+    <select id="getDictionary" resultType="com.ezfire.domain.Dictionary" parameterType="java.util.List">
         SELECT * FROM B_QJ_ZDX
-        WHERE ZDLX = #{zdlx, jdbcType=VARCHAR}
+        WHERE 1 = 1
+        <if test="list != null and list.size() > 0">
+            AND ZDLX IN 
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item, jdbcType=VARCHAR}
+            </foreach>
+        </if>
         AND SFXS = '1'
         ORDER BY ZDJB
     </select>

@@ -126,11 +126,7 @@ public class EsQueryUtils {
 	 * @return
 	 */
 	public static String getListResults(SearchHits searchHits) {
-		List<Map<String,Object>> results = new ArrayList<>();
-		for (SearchHit searchHit : searchHits) {
-			results.add(searchHit.getSource());
-		}
-		return JSON.toJSONString(results);
+		return getListResults(searchHits, null);
 	}
 
 	/**
@@ -154,7 +150,7 @@ public class EsQueryUtils {
 	/**
 	 * 通用获取查询结果集Map，并进行json序列化
 	 * @param searchHits
-	 * @param function
+	 * @param function 生成结果集Map的key
 	 * @return
 	 */
 	public static String getMapResults(SearchHits searchHits, Function<Map<String, Object>, String> function) {

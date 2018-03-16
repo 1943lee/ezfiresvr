@@ -179,7 +179,8 @@ public class ComDefine {
 	 * 缓存字典项key
 	 */
 	public enum CacheNameDefine {
-		fire_dictionary_vehicle_type("10003","装备类型字典项编号");
+		fire_dictionary_vehicle_type("10003","消防-装备类型"),
+		fire_dictionary_fireDanger_type("10006","消防-危化品类别");
 
 		private String value;
 		private String description;

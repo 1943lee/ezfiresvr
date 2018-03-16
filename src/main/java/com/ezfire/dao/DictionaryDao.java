@@ -15,5 +15,5 @@ public interface DictionaryDao {
 	 * @param zdlx 字典类型
 	 * @return
 	 */
-	List<Dictionary> getDictionary(String zdlx);
+	List<Dictionary> getDictionary(List<String> zdlx);
 }

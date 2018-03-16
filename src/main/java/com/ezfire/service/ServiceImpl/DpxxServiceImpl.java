@@ -1,7 +1,9 @@
 package com.ezfire.service.serviceImpl;
 
+import com.ezfire.common.ComCache;
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.EsQueryUtils;
+import com.ezfire.domain.Dictionary;
 import com.ezfire.domain.Dpxx;
 import com.ezfire.domain.Zqxx;
 import com.ezfire.service.DpxxService;
@@ -10,6 +12,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lcy on 2018/1/24.
@@ -25,10 +31,21 @@ public class DpxxServiceImpl implements DpxxService{
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH", zqbh));
 		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+		// 车辆类型字典项缓存，用于处理调派车辆中的车辆名称，根据车辆类型从缓存获取
+		HashMap<String, Dictionary> vehicleTypeDict = ComCache.getInstance().getDictionaryByType(ComDefine.CacheNameDefine.fire_dictionary_vehicle_type);
 
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_dpxx_read, "dpxx",
 				EsQueryUtils.getFetchInlcudes(includes, Dpxx.class), null, 0, ComDefine.elasticMaxSearchSize,
-				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC), EsQueryUtils::getListResults);
+				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
+				(searchHits -> EsQueryUtils.getListResults(searchHits,
+						(sourceMap -> {
+							if(sourceMap.containsKey("DPCL")) {
+								List<Map<String,Object>> dpclList = (List<Map<String, Object>>) sourceMap.get("DPCL");
+								if(null != dpclList && null != vehicleTypeDict) {
+									dpclList.forEach(dpclMap -> dpclMap.put("CLMC", vehicleTypeDict.get(dpclMap.get("CLLX")).getZdmc()));
+								}
+							}
+						}))));
 	}
 
 	@Override

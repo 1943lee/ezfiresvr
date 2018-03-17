@@ -80,10 +80,8 @@ public class Zqxx {
 	private SZDXFJG szdxfjg;
 	@ApiModelProperty(value = "所在地行政区划")
 	private SZDXZQH szdxzqh;
-	@ApiModelProperty(value = "跨区域消防机构,单个值或数组形式")
-	private SZDXFJG kqyxfjg;
-	@ApiModelProperty(value = "跨区域行政区划,单个值或数组形式")
-	private SZDXZQH kqyxzqh;
+	@ApiModelProperty(value = "跨区域增援信息")
+	private KQYZYXX kqyzyxx;
 
 	@ApiModel(description = "突出灾情")
 	private static class TCZQ {
@@ -285,6 +283,80 @@ public class Zqxx {
 		}
 	}
 
+	@ApiModel(description = "跨区域增援信息")
+	private static class KQYZYXX {
+		@ApiModelProperty(value = "跨区域等级，1总队、2支队、3大队、4中队")
+		private String kqydj;
+		@ApiModelProperty(value = "消防机构编号")
+		private String xfjgbh;
+		@ApiModelProperty(value = "消防机构名称")
+		private String xfjgmc;
+		@ApiModelProperty(value = "消防机构内部编码")
+		private String xfjgnbbm;
+		@ApiModelProperty(value = "行政区划编号")
+		private String xzqhbh;
+		@ApiModelProperty(value = "行政区划名称")
+		private String xzqhmc;
+		@ApiModelProperty(value = "行政区划内部编码")
+		private String xzqhnbbm;
+
+		public String getKqydj() {
+			return kqydj;
+		}
+
+		public void setKqydj(String kqydj) {
+			this.kqydj = kqydj;
+		}
+
+		public String getXfjgbh() {
+			return xfjgbh;
+		}
+
+		public void setXfjgbh(String xfjgbh) {
+			this.xfjgbh = xfjgbh;
+		}
+
+		public String getXfjgmc() {
+			return xfjgmc;
+		}
+
+		public void setXfjgmc(String xfjgmc) {
+			this.xfjgmc = xfjgmc;
+		}
+
+		public String getXfjgnbbm() {
+			return xfjgnbbm;
+		}
+
+		public void setXfjgnbbm(String xfjgnbbm) {
+			this.xfjgnbbm = xfjgnbbm;
+		}
+
+		public String getXzqhbh() {
+			return xzqhbh;
+		}
+
+		public void setXzqhbh(String xzqhbh) {
+			this.xzqhbh = xzqhbh;
+		}
+
+		public String getXzqhmc() {
+			return xzqhmc;
+		}
+
+		public void setXzqhmc(String xzqhmc) {
+			this.xzqhmc = xzqhmc;
+		}
+
+		public String getXzqhnbbm() {
+			return xzqhnbbm;
+		}
+
+		public void setXzqhnbbm(String xzqhnbbm) {
+			this.xzqhnbbm = xzqhnbbm;
+		}
+	}
+
 	public String getZqbh() {
 		return zqbh;
 	}
@@ -461,22 +533,6 @@ public class Zqxx {
 		this.szdxzqh = szdxzqh;
 	}
 
-	public SZDXFJG getKqyxfjg() {
-		return kqyxfjg;
-	}
-
-	public void setKqyxfjg(SZDXFJG kqyxfjg) {
-		this.kqyxfjg = kqyxfjg;
-	}
-
-	public SZDXZQH getKqyxzqh() {
-		return kqyxzqh;
-	}
-
-	public void setKqyxzqh(SZDXZQH kqyxzqh) {
-		this.kqyxzqh = kqyxzqh;
-	}
-
 	public IdValueChain getZqlx() {
 		return zqlx;
 	}
@@ -571,5 +627,13 @@ public class Zqxx {
 
 	public void setJlgdsj(String jlgdsj) {
 		this.jlgdsj = jlgdsj;
+	}
+
+	public KQYZYXX getKqyzyxx() {
+		return kqyzyxx;
+	}
+
+	public void setKqyzyxx(KQYZYXX kqyzyxx) {
+		this.kqyzyxx = kqyzyxx;
 	}
 }

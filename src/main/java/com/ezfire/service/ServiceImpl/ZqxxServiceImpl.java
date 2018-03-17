@@ -6,11 +6,13 @@ import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
 import com.ezfire.common.EsQueryUtils;
 import com.ezfire.domain.AroundResource;
-import com.ezfire.domain.restfulParams.AlarmCondition;
 import com.ezfire.domain.Zqxx;
+import com.ezfire.domain.restfulParams.AlarmCondition;
 import com.ezfire.service.ZqxxService;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -57,13 +59,21 @@ public class ZqxxServiceImpl implements ZqxxService {
 		if(!xfjgnbbm.isEmpty()) {
 			if(xfjgflag.equals("0")) {
 				boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", xfjgnbbm));
-			} else if(xfjgflag.equals("1")) {
-				boolQueryBuilder.must().add(QueryBuilders.prefixQuery("KQYXFJG.XFJGNBBM", xfjgnbbm));
-			} else if(xfjgflag.equals("2")) {
-				BoolQueryBuilder subQueryBuilder = QueryBuilders.boolQuery();
-				subQueryBuilder.should().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", xfjgnbbm));
-				subQueryBuilder.should().add(QueryBuilders.prefixQuery("KQYXFJG.XFJGNBBM", xfjgnbbm));
-				boolQueryBuilder.must().add(subQueryBuilder);
+			} else {
+				// 根据xfjgnbbm获取单位级别，1为总队
+				int level = xfjgnbbm.split("\\.").length - 1;
+				BoolQueryBuilder nestedInnerQuery = QueryBuilders.boolQuery();
+				nestedInnerQuery.must().add(QueryBuilders.prefixQuery("KQYZYXX.XFJGNBBM", xfjgnbbm));
+				nestedInnerQuery.must().add(QueryBuilders.rangeQuery("KQYZYXX.KQYDJ").gte(level));
+				NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("KQYZYXX",nestedInnerQuery, ScoreMode.None);
+				if(xfjgflag.equals("1")) {
+					boolQueryBuilder.must().add(nestedQuery);
+				} else if(xfjgflag.equals("2")) {
+					BoolQueryBuilder subQueryBuilder = QueryBuilders.boolQuery();
+					subQueryBuilder.should().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", xfjgnbbm));
+					subQueryBuilder.should().add(nestedQuery);
+					boolQueryBuilder.must().add(subQueryBuilder);
+				}
 			}
 		}
 		if(caseNotClosed) {

@@ -61,10 +61,10 @@ public class ZqxxServiceImpl implements ZqxxService {
 				boolQueryBuilder.must().add(QueryBuilders.prefixQuery("SZDXFJG.XFJGNBBM", xfjgnbbm));
 			} else {
 				// 根据xfjgnbbm获取单位级别，1为总队
-				int level = xfjgnbbm.split("\\.").length - 1;
+				int level = xfjgnbbm.split("\\.").length - 2;
 				BoolQueryBuilder nestedInnerQuery = QueryBuilders.boolQuery();
 				nestedInnerQuery.must().add(QueryBuilders.prefixQuery("KQYZYXX.XFJGNBBM", xfjgnbbm));
-				nestedInnerQuery.must().add(QueryBuilders.rangeQuery("KQYZYXX.KQYDJ").gte(level));
+				nestedInnerQuery.must().add(QueryBuilders.rangeQuery("KQYZYXX.KQYDJ").lte(level).gte(1));
 				NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery("KQYZYXX",nestedInnerQuery, ScoreMode.None);
 				if(xfjgflag.equals("1")) {
 					boolQueryBuilder.must().add(nestedQuery);

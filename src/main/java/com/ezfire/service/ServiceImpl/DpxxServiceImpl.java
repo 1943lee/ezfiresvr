@@ -11,17 +11,19 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by lcy on 2018/1/24.
  */
 @Service
 public class DpxxServiceImpl implements DpxxService{
+
+	@Value("#{'${dispatchExcludeOrgId}'.split(',')}")
+	private List<String> dispatchExcludeOrgIds;
 
 	public String getDpxxByZQBH(String zqbh, String[] includes) {
 		if(null == zqbh || zqbh.isEmpty()) {
@@ -39,10 +41,15 @@ public class DpxxServiceImpl implements DpxxService{
 				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
 				(searchHits -> EsQueryUtils.getListResults(searchHits,
 						(sourceMap -> {
-							if(sourceMap.containsKey("DPCL")) {
-								List<Map<String,Object>> dpclList = (List<Map<String, Object>>) sourceMap.get("DPCL");
-								if(null != dpclList && null != vehicleTypeDict) {
-									dpclList.forEach(dpclMap -> dpclMap.put("CLMC", vehicleTypeDict.get(dpclMap.get("CLLX")).getZdmc()));
+							if(sourceMap.containsKey("FSJG")) {
+								Map<String, String> fsjg = (Map<String, String>) sourceMap.get("FSJG");
+								if(fsjg.containsKey("XFJGBH") && dispatchExcludeOrgIds.contains(fsjg.get("XFJGBH")))
+									return;
+								if (sourceMap.containsKey("DPCL")) {
+									List<Map<String, Object>> dpclList = (List<Map<String, Object>>) sourceMap.get("DPCL");
+									if (null != dpclList && null != vehicleTypeDict) {
+										dpclList.forEach(dpclMap -> dpclMap.put("CLMC", vehicleTypeDict.get(dpclMap.get("CLLX")).getZdmc()));
+									}
 								}
 							}
 						}))));

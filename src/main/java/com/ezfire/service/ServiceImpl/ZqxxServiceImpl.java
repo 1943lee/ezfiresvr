@@ -1,12 +1,10 @@
 package com.ezfire.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
-import com.ezfire.common.ComConvert;
-import com.ezfire.common.ComDefine;
-import com.ezfire.common.ComMethod;
-import com.ezfire.common.EsQueryUtils;
+import com.ezfire.common.*;
 import com.ezfire.domain.AroundResource;
 import com.ezfire.domain.Zqxx;
+import com.ezfire.domain.comDomains.SZDXFJG;
 import com.ezfire.domain.restfulParams.AlarmCondition;
 import com.ezfire.service.ZqxxService;
 import org.apache.lucene.search.join.ScoreMode;
@@ -35,8 +33,32 @@ public class ZqxxServiceImpl implements ZqxxService {
 			return  null;
 		}
 
-		return EsQueryUtils.queryById(ComDefine.fire_zqxx_read,"zqxx",zqbh,"ZQBH",
-				EsQueryUtils.getFetchInlcudes(includes, Zqxx.class),null);
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBH", zqbh));
+		boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("JLZT", "0"));
+
+		// 车辆类型字典项缓存，用于处理调派车辆中的车辆名称，根据车辆类型从缓存获取
+		HashMap<String, SZDXFJG> xfjgNameCache = ComCache.getInstance().getmComXfjgNameCache();
+
+		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqxx_read, "zqxx",
+				EsQueryUtils.getFetchInlcudes(includes, Zqxx.class), null, 0, 1,
+				SortBuilders.scoreSort(),
+				(searchHits -> {
+					if(searchHits.getTotalHits() == 0)
+						return "";
+					SearchHit searchHit = searchHits.getAt(0);
+					Map<String,Object> map = searchHit.getSource();
+					if(map.containsKey("SZDXFJG")) {
+						Map<String,Object> xfjgMap = (Map<String, Object>) map.get("SZDXFJG");
+						if(null != xfjgMap) {
+							String dwbh = ComConvert.toString(xfjgMap.get("XFJGBH"));
+							if(xfjgNameCache.containsKey(dwbh)) {
+								xfjgMap.put("XFJGJC", xfjgNameCache.get(dwbh).getXfjgjc());
+							}
+						}
+					}
+					return JSON.toJSONString(map);
+				}));
 	}
 
 	@Override

@@ -150,4 +150,13 @@ public class ComMethod {
 		}
 		return convertSuccess;
 	}
+
+	/**
+	 * 判断输入字符串是否为yyyy-MM-dd HH:mm:ss格式
+	 * @param str
+	 * @return
+	 */
+	public static boolean isValidDate(String str) {
+		return isValidDate(str, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+	}
 }

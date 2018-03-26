@@ -12,6 +12,7 @@ import org.elasticsearch.common.geo.builders.ShapeBuilders;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -76,6 +77,8 @@ public class ZqxxServiceImpl implements ZqxxService {
 		// 是否只查询突出灾情
 		boolean onlyStressed = ComConvert.toBoolean(condition.get("onlyStressed"), false);
 		int userOrgLevel = ComConvert.toInteger(condition.get("userOrgLevel"), -1);
+		String startTime = ComConvert.toString(condition.get("startTime"));
+		String endTime = ComConvert.toString(condition.get("endTime"));
 
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		if(!xfjgnbbm.isEmpty()) {
@@ -104,6 +107,20 @@ public class ZqxxServiceImpl implements ZqxxService {
 		if(onlyStressed && userOrgLevel != -1) {
 			boolQueryBuilder.must().add(QueryBuilders.termQuery("TCZQ.LEVEL_" + userOrgLevel, "1"));
 		}
+		// 时间过滤
+		if(!startTime.isEmpty() || !endTime.isEmpty()) {
+			RangeQueryBuilder rangeQueryBuilder = new RangeQueryBuilder("LASJ");
+			if(!startTime.isEmpty() && ComMethod.isValidDate(startTime)) {
+				rangeQueryBuilder.gte(startTime);
+			}
+			if(!endTime.isEmpty() && ComMethod.isValidDate(endTime)) {
+				rangeQueryBuilder.lte(endTime);
+			} else {
+				rangeQueryBuilder.lte(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+			}
+			boolQueryBuilder.must().add(rangeQueryBuilder);
+		}
+
 		// 默认只查询真警
 		boolQueryBuilder.must().add(QueryBuilders.termQuery("ZQBS", "1"));
 		// 过滤无效记录

@@ -48,6 +48,8 @@ public class ZqxxController {
 			@ApiImplicitParam(name = "notClosed", value = "notClosed,默认true,表示只查未结案的", defaultValue = "true", paramType = "query", dataType = "boolean"),
 			@ApiImplicitParam(name = "onlyStressed", value = "onlyStressed,为true时表示只查突出灾情，默认为false,表示查询全部", defaultValue = "false", paramType = "query", dataType = "boolean"),
 			@ApiImplicitParam(name = "userOrgLevel", value = "userOrgLevel,用户所在单位级别，部局为0依次递增,用于查询突出灾情，根据用户不同级别进行查询", paramType = "query", dataType = "int"),
+			@ApiImplicitParam(name="startTime",value="开始时间，格式为yyyy-MM-dd HH:mm:ss",dataType="String",paramType="query"),
+			@ApiImplicitParam(name="endTime",value="结束时间，格式为yyyy-MM-dd HH:mm:ss",dataType="String",paramType="query"),
 			@ApiImplicitParam(name="includes",value="返回字段，数组形式，逗号隔开",dataType="String",paramType="query")})
 	public ResponseEntity<String> getZqxxByCondition(@RequestParam String xfjgnbbm,
 													 @RequestParam(defaultValue = "0") String xfjgflag,
@@ -56,6 +58,8 @@ public class ZqxxController {
 													 @RequestParam(defaultValue = "true") boolean notClosed,
 													 @RequestParam(defaultValue = "false") boolean onlyStressed,
 													 @RequestParam(defaultValue = "-1") int userOrgLevel,
+													 @RequestParam(defaultValue = "") String startTime,
+													 @RequestParam(defaultValue = "") String endTime,
 													 @RequestParam(required = false) String[] includes) {
 		Map<String, Object> condition = new HashMap<>();
 		condition.put("xfjgnbbm", xfjgnbbm);
@@ -65,6 +69,8 @@ public class ZqxxController {
 		condition.put("notClosed", notClosed);
 		condition.put("onlyStressed", onlyStressed);
 		condition.put("userOrgLevel", userOrgLevel);
+		condition.put("startTime", startTime);
+		condition.put("endTime", endTime);
 		condition.put("includes", includes);
 
 		String zqxx = zqxxService.getZqxxByCondition(condition);

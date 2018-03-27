@@ -9,4 +9,6 @@ public interface VehicleService {
 	String getVehicleBasics(String[] keys, int type, String[] includes);
 
 	String getVehicleStatus(String[] keys);
+
+	String getVehicleLocation(String[] keys);
 }

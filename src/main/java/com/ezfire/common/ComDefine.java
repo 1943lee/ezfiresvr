@@ -23,7 +23,14 @@ public class ComDefine {
 	 */
 	public final static String esGeoShapeColumn = "SHAPE";
 
+	/**
+	 * redis车辆状态分组前缀
+	 */
 	public final static String redisVehicleStatusPrefix = "vehStatusInfo:";
+	/**
+	 * redis车辆位置分组前缀
+	 */
+	public final static String redisVehicleLocationPrefix = "vehLocationInfo:";
 
 	/**
 	 * 灾情信息

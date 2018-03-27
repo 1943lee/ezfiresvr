@@ -96,4 +96,19 @@ public class VehicleServiceImpl implements VehicleService {
 
 		return res.toJSONString();
 	}
+
+	@Override
+	public String getVehicleLocation(String[] keys) {
+		List<String> outRedis = stringRedisTemplate.opsForValue()
+				.multiGet(Arrays.stream(keys)
+						.map(key-> ComDefine.redisVehicleLocationPrefix + key)
+						.collect(Collectors.toList()));
+		JSONObject res = new JSONObject();
+		for(int i = 0; i < keys.length; i++) {
+			if(null == outRedis.get(i)) continue;
+			res.put(keys[i], JSON.parseObject(outRedis.get(i).replace("^", " ")));
+		}
+
+		return res.toJSONString();
+	}
 }

@@ -59,4 +59,14 @@ public class VehicleController {
 		String result = vehicleService.getVehicleStatus(keys);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+
+	@RequestMapping(value = "/location",method = RequestMethod.GET,produces = "application/json")
+	@ApiImplicitParam(name = "keys", value = "keys，车辆编号,为数组，逗号隔开", required = true,
+			paramType = "query", dataType = "String")
+	@ApiOperation(value = "批量根据车辆编号获取车辆位置",
+			notes = "返回值为list，内部为key-value结构，key为车辆编号")
+	public ResponseEntity<String> getBasicVehicleLocation(@RequestParam String[] keys) {
+		String result = vehicleService.getVehicleLocation(keys);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }

@@ -26,6 +26,8 @@ public class AlarmRecording {
 	private String bjkssj;
 	@ApiModelProperty(value = "报警结束时间")
 	private String bjjssj;
+	@ApiModelProperty(value = "是否下发，0表示否，1表示是")
+	private String sfxf;
 
 	@ApiModel(value = "录音文件")
 	static class LYWJ {
@@ -151,5 +153,13 @@ public class AlarmRecording {
 
 	public void setBjjssj(String bjjssj) {
 		this.bjjssj = bjjssj;
+	}
+
+	public String getSfxf() {
+		return sfxf;
+	}
+
+	public void setSfxf(String sfxf) {
+		this.sfxf = sfxf;
 	}
 }

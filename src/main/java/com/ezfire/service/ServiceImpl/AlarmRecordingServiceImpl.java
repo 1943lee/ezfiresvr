@@ -53,7 +53,7 @@ public class AlarmRecordingServiceImpl implements AlarmRecordingService {
 
 		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqly_read, "zqly",
 				EsQueryUtils.getFetchInlcudes(includes, AlarmRecording.class), null, from, size,
-				SortBuilders.fieldSort("BJKSSJ").order(SortOrder.DESC),
+				SortBuilders.fieldSort("BJKSSJ").order(SortOrder.ASC),
 				EsQueryUtils::getListResults);
 	}
 }

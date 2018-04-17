@@ -1,5 +1,6 @@
 package com.ezfire.service.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.ezfire.common.ComConvert;
 import com.ezfire.common.ComDefine;
 import com.ezfire.common.ComMethod;
@@ -9,11 +10,16 @@ import com.ezfire.service.ZqzlService;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,9 +65,37 @@ public class ZqzlServiceImpl implements ZqzlService {
 		//5.返回字段
 		String[] includes = conditions.containsKey("includes") ? (String[]) conditions.get("includes") : null;
 
-		return EsQueryUtils.queryElasticSearch(boolQueryBuilder, ComDefine.fire_zqzl_read, "zqzl",
+		boolQueryBuilder.must().add(QueryBuilders.termQuery("SFZD","1"));
+		SearchHits topHits = (SearchHits) EsQueryUtils.queryCoreMethod(boolQueryBuilder, ComDefine.fire_zqzl_read, "zqzl",
 				EsQueryUtils.getFetchInlcudes(includes, Zqzl.class), null, from, size,
-				SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
-				EsQueryUtils::getListResults);
+				new SortBuilder[] {
+					SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),
+				}, ComDefine.elasticTimeOut,(searchHits -> searchHits));
+
+		List<Map<String, Object>> resultList = new ArrayList<>(size);
+		for(SearchHit searchHit : topHits) {
+			resultList.add(searchHit.getSource());
+		}
+
+		if(topHits.getTotalHits() < size) {
+			boolQueryBuilder.must().remove(boolQueryBuilder.must().size() - 1);
+			boolQueryBuilder.mustNot().add(QueryBuilders.termQuery("SFZD", "1"));
+			SearchHits normalHits = (SearchHits) EsQueryUtils.queryCoreMethod(boolQueryBuilder,
+					ComDefine.fire_zqzl_read, "zqzl", EsQueryUtils.getFetchInlcudes(includes, Zqzl.class),
+					null, from, size, new SortBuilder[]{SortBuilders.fieldSort("FSSJ").order(SortOrder.DESC),},
+					ComDefine.elasticTimeOut, (searchHits -> searchHits));
+
+			for(SearchHit searchHit : normalHits) {
+				Map<String,Object> map = searchHit.getSource();
+				if(!map.containsKey("SFZD")) {
+					map.put("SFZD", "0");
+				}
+				resultList.add(map);
+				if(resultList.size() >= size)
+					break;
+			}
+		}
+
+		return JSON.toJSONString(resultList);
 	}
 }

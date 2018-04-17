@@ -33,6 +33,8 @@ public class Zqzl {
 	private String jsry;
 	@ApiModelProperty(value = "接收机构")
 	private SZDXFJG jsjg;
+	@ApiModelProperty(value = "是否置顶，1为指定，0或空表示不置顶")
+	private String sfzd;
 
 	@ApiModel(description = "文件资料")
 	private static class WJZL {
@@ -172,5 +174,13 @@ public class Zqzl {
 
 	public void setJsjg(SZDXFJG jsjg) {
 		this.jsjg = jsjg;
+	}
+
+	public String getSfzd() {
+		return sfzd;
+	}
+
+	public void setSfzd(String sfzd) {
+		this.sfzd = sfzd;
 	}
 }

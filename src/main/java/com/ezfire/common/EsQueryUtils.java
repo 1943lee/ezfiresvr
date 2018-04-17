@@ -136,6 +136,18 @@ public class EsQueryUtils {
 	 * @return
 	 */
 	public static String getListResults(SearchHits searchHits, Consumer<Map<String, Object>> consumer) {
+		return getListResults(searchHits, consumer, null);
+	}
+
+	/**
+	 * 获取查询结果集list，并进行json序列化，支持处理单条记录
+	 * @param searchHits elasticsearch 查询结果
+	 * @param consumer 用于处理SearchHit中的字段
+	 * @param sortFunc 用于处理结果排序
+	 * @return
+	 */
+	public static String getListResults(SearchHits searchHits, Consumer<Map<String, Object>> consumer,
+										Consumer<List<Map<String,Object>>> sortFunc) {
 		List<Map<String,Object>> results = new ArrayList<>();
 		for (SearchHit searchHit : searchHits) {
 			Map<String,Object> searchMap = searchHit.getSource();
@@ -143,6 +155,9 @@ public class EsQueryUtils {
 				consumer.accept(searchMap);
 			}
 			results.add(searchMap);
+		}
+		if(null != sortFunc) {
+			sortFunc.accept(results);
 		}
 		return JSON.toJSONString(results);
 	}
@@ -225,7 +240,7 @@ public class EsQueryUtils {
 	 * @param timeValue 超时参数
 	 * @param callback 查询结果回调，参数为{@link SearchHits}
 	 */
-	private static Object queryCoreMethod(QueryBuilder queryBuilder, String index, String type,
+	public static Object queryCoreMethod(QueryBuilder queryBuilder, String index, String type,
 										String[] fetchIncludes, String[] fetchExcludes,
 										int from, int size, SortBuilder[] sortBuilders,TimeValue timeValue,
 										Function<SearchHits, Object> callback) {

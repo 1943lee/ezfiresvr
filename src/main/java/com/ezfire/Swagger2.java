@@ -10,6 +10,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by lcy on 2018/1/21.
  */
@@ -28,9 +31,10 @@ public class Swagger2 {
     }
 
     private ApiInfo apiInfo() {
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return new ApiInfoBuilder()
                 .title("ezfire service restful apis")
-                .description("ezfiresvr restful接口说明")
+                .description("ezfiresvr restful接口说明, 启动时间" + sf.format(new Date()))
                 .version("1.0")
                 .build();
     }
